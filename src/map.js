@@ -8,7 +8,7 @@ let canvas = d3.select("body")
     .attr("width", width)
     .attr("height", height)
 
-d3.json("../data/geoJson/Community_Boundaries.geoJson", (data) => {
+d3.json("../data/geoJson/Community_Boundaries.geojson", (data) => {
     // Add a <g> element for each of the communities in the data
     let group = canvas.selectAll("g")
         .data(data.features)
