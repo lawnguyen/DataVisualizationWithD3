@@ -37,7 +37,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         const travelModes = csvData.columns.filter((c) => {
             return cols.includes(c);
         });
-        travelModes.push("unavailable");
+        travelModes.push('unavailable');
 
         // Create a dictionary mapping comm_code to csvData for faster lookup
         let communities = {};
@@ -84,12 +84,20 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         // Append path to all the <g> elements
         let areas = group.append('path')
             .attr('d', path)
-            .attr('class', 'area');
+            .attr('class', 'area')
 
         // Add tooltip to the each community path element
-        areas.append('title')
-            .text(d => { 
-                return d.properties.name; 
+        let tooltip = createTooltip();
+        areas.on('mouseover', () => { tooltip.style('display', null); })
+            .on('mouseout', () => { tooltip.style('display', 'none'); })
+            .on('mousemove', function(d) {
+                let xPosition = d3.mouse(this)[0] + 10;
+                let yPosition = d3.mouse(this)[1] + 20;
+                tooltip.attr('transform', 'translate(' + xPosition + ',' + yPosition + ')');
+                tooltip.select('text').text(d.properties.name);
+                tooltip.select('rect')
+                    .attr('width', Math.round(
+                        tooltip.select('text').node().getComputedTextLength()) + 20 );
             });
 
         // Label for each community
@@ -147,6 +155,32 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .text((d) => { return d; });
     });
 });
+
+function createTooltip() {
+    // create tooltip
+    let tooltip = d3.select('svg')
+    .append('g')
+        .attr('class', 'tooltip')
+        .style('display', 'none');
+
+    tooltip.append('rect')
+        .attr('x', 20)
+        .attr('rx', '20')
+        .attr('ry', '20')
+        .attr('height', 20)
+        .attr('fill', 'black')
+        .style('opacity', 0.75);
+
+    tooltip.append('text')
+        .attr('x', 30)
+        .attr('dy', '1.2em')
+        .style('text-anchor', 'start')
+        .attr('font-size', '12')
+        .attr('fill', 'white')
+        .attr('font-weight', 'bold');
+    
+    return tooltip;
+}
 
 function processCsvRow(d, i, columns) {
     // Convert all quantative values to numbers
