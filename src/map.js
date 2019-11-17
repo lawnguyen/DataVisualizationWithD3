@@ -5,7 +5,7 @@ const colors = [
     '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
     '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
     '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
-    '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
+    '#aaffc3', '#808000', '#ffd8b1', '#808080'
 ];
 
 let canvas = d3.select('body')
@@ -22,6 +22,7 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (data) => {
         .attr('fill', () => {
             return colors[Math.floor((Math.random() * colors.length))];
         })
+        .attr('class', 'community')
 
     // Set the d3 geo projection and path
     const projection = d3.geoMercator().fitSize([width, height], data);
@@ -37,9 +38,6 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (data) => {
         .attr('x', (d) => { return path.centroid(d)[0] })
         .attr('y', (d) => { return path.centroid(d)[1] })
         .attr('text-anchor', 'middle')
-        .attr('fill', '#313131')
-        .attr('font-size', '8')
-        .attr('font-family', 'Arial, Helvetica, sans-serif')
-        .attr('font-weight', 'bold')
+        .attr('class', 'text-label')
         .text(d => { return d.properties.comm_code })
 });

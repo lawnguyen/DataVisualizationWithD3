@@ -1,0 +1,12 @@
+.text-label {
+    fill: black;
+    stroke: black;
+    stroke-width: 0;
+    font-size: 8;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.community {
+    stroke: whitesmoke;
+    stroke-width: 0.5;
+}
