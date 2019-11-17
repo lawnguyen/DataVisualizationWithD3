@@ -1,13 +1,24 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#chart {
+    text-align: center;
+}
+
 .text-label {
     fill: black;
     stroke: black;
     stroke-width: 0;
-    font-size: 8;
-    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7;
     font-weight: bold;
 }
 
 .community {
-    stroke: whitesmoke;
+    stroke: black;
     stroke-width: 0.5;
 }
