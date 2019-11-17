@@ -51,9 +51,6 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         .enter()
         .append('g')
           .attr('class', 'community')
-        //   .attr('fill', () => {
-        //       return colors[Math.floor((Math.random() * colors.length))];
-        //   })
           .attr('fill', (d) => { 
                 const communityCode = d.properties.comm_code;
                 const comm = communities[communityCode];
@@ -75,7 +72,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 if (comm[max] === 0) {
                     return '#EBEBE4'; 
                 }
-                getAssignedColor(max);
+                return getAssignedColor(max);
 
                 return 'yellow';
             });
@@ -88,6 +85,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         let areas = group.append('path')
             .attr('d', path)
             .attr('class', 'area');
+
+        // Add tooltip to the each community path element
+        // areas.append('title')
+        //     .text(d => { d.name });
 
         // Label for each community
         group.append('text')
@@ -131,7 +132,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('width', 16)
             .attr('height', 16)
             .attr('fill', (d) => {
-                getAssignedColor(d);
+                return getAssignedColor(d);
             });
 
         // legend value text
