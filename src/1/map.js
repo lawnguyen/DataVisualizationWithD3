@@ -87,8 +87,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('class', 'area');
 
         // Add tooltip to the each community path element
-        // areas.append('title')
-        //     .text(d => { d.name });
+        areas.append('title')
+            .text(d => { 
+                return d.properties.name; 
+            });
 
         // Label for each community
         group.append('text')

@@ -23,6 +23,10 @@ h1 {
     stroke-width: 0.5;
 }
 
+.community:hover {
+    fill: #D64933
+}
+
 .legend-text {
     font-weight: bold;
     text-anchor: start;
