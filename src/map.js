@@ -2,36 +2,41 @@
 const width = 760, height = 700;
 
 const colors = [
-    '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
-    '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
-    '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
-    '#aaffc3', '#808000', '#ffd8b1', '#808080'
+    '#469990', '#aaffc3', '#ffd8b1', 
+    '#fabebe', '#f58231', '#f58231', 
+    '#ffe119', '#469990', '#9A6324'
 ];
 
 // The columns from the dataset that we are interested in
 const cols = [
-    "drovealone",
-    "nowork",
-    "transit",
-    "carpool_dr",
-    "carpool_pa",
-    "bicycle",
-    "motorcycle",
-    "walk",
-    "work_home"
+    'drovealone',
+    'nowork',
+    'transit',
+    'carpool_dr',
+    'carpool_pa',
+    'bicycle',
+    'motorcycle',
+    'walk',
+    'work_home'
 ];
 
 let canvas = d3.select('#chart')
     .append('svg')
        .attr('width', width)
-       .attr('height', height)
-       .attr("align","center");
+       .attr('height', height);
+
+let legendContainer = d3.select('svg').append('g')
+    .attr('transform', 'translate(' + 100 + ',0)');
 
 d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
-    d3.csv("../data/Modes_of_Travel.csv", (d, i, columns) => {
+    d3.csv('../data/Modes_of_Travel.csv', (d, i, columns) => {
         return processCsvRow(d, i, columns);
     }, (error, csvData) => {
         if (error) throw error;
+
+        const travelModes = csvData.columns.filter((c) => {
+            return cols.includes(c);
+        });
 
         // Create a dictionary mapping comm_code to csvData for faster lookup
         let communities = {};
@@ -52,6 +57,7 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 const communityCode = d.properties.comm_code;
                 const comm = communities[communityCode];
                 if (!comm) {
+                    // 'Disabled' color for communities we don't have data for
                     return '#EBEBE4';
                 }
 
@@ -61,10 +67,45 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                         if (max === null) { max = c; } 
                         if (comm[c] > comm[max]) { 
                             max = c;
-                        } 
+                        }
                     } 
                 };
-                console.log("the max is: " + max + " for " + comm.name);
+
+                if (comm[max] === 0) {
+                    return '#EBEBE4'; 
+                }
+
+                switch (max) {
+                    case 'drovealone':
+                        return '#469990';
+                        break;
+                    case 'nowork':
+                        return '#aaffc3';
+                        break;
+                    case 'transit':
+                        return '#fffac8';
+                        break;
+                    case 'carpool_dr':
+                        return '#ffd8b1';
+                        break;
+                    case 'carpool_pa':
+                        return '#fabebe';
+                        break;
+                    case 'bicycle':
+                        return '#f58231';
+                        break;
+                    case 'motorcycle':
+                        return '#ffe119';
+                        break;
+                    case 'walk':
+                        return '#469990';
+                        break;
+                    case 'work_home':
+                        return '#9A6324';
+                        break;
+                    default:
+                        return '#EBEBE4';
+                }
 
                 return 'yellow';
             });
@@ -85,6 +126,82 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('text-anchor', 'middle')
             .attr('class', 'text-label')
             .text(d => { return d.properties.comm_code });
+
+        // legend label
+        legendContainer.append('text')
+            .attr('x', width - 200)
+            .attr('y', 9.5)
+            .attr('font-size', 9)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('MAJORITY MODE OF');
+        legendContainer.append('text')
+            .attr('x', width - 200)
+            .attr('y', 22)
+            .attr('font-size', 9)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('TRAVEL TO WORK');
+
+        // create legend
+        let legend = legendContainer.append('g')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', 10)
+            .attr('text-anchor', 'end')
+            .selectAll('g')
+            .data(travelModes)
+            .enter()
+            .append('g')
+              .attr('transform', (d, i) => { return 'translate(0,' + i * 20 + ')'; });
+
+        // legend value colors
+        legend.append('rect')
+            .attr('x', width - 200)
+            .attr('y', 30)
+            .attr('width', 16)
+            .attr('height', 16)
+            .attr('fill', (d) => {
+                switch (d) {
+                    case 'drovealone':
+                        return '#469990';
+                        break;
+                    case 'nowork':
+                        return '#aaffc3';
+                        break;
+                    case 'transit':
+                        return '#fffac8';
+                        break;
+                    case 'carpool_dr':
+                        return '#ffd8b1';
+                        break;
+                    case 'carpool_pa':
+                        return '#fabebe';
+                        break;
+                    case 'bicycle':
+                        return '#f58231';
+                        break;
+                    case 'motorcycle':
+                        return '#ffe119';
+                        break;
+                    case 'walk':
+                        return '#469990';
+                        break;
+                    case 'work_home':
+                        return '#9A6324';
+                        break;
+                    default:
+                        return '#EBEBE4';
+                }
+            });
+
+        // legend value text
+        legend.append('text')
+            .attr('x', width - 180)
+            .attr('y', 38)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .attr('text-anchor', 'end')
+            .text((d) => { return d; });
     });
 });
 

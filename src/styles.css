@@ -22,3 +22,8 @@ h1 {
     stroke: black;
     stroke-width: 0.5;
 }
+
+.legend-text {
+    font-weight: bold;
+    text-anchor: start;
+  }
