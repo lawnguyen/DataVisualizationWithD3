@@ -75,38 +75,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 if (comm[max] === 0) {
                     return '#EBEBE4'; 
                 }
-
-                switch (max) {
-                    case 'drovealone':
-                        return '#469990';
-                        break;
-                    case 'nowork':
-                        return '#aaffc3';
-                        break;
-                    case 'transit':
-                        return '#fffac8';
-                        break;
-                    case 'carpool_dr':
-                        return '#ffd8b1';
-                        break;
-                    case 'carpool_pa':
-                        return '#fabebe';
-                        break;
-                    case 'bicycle':
-                        return '#f58231';
-                        break;
-                    case 'motorcycle':
-                        return '#ffe119';
-                        break;
-                    case 'walk':
-                        return '#469990';
-                        break;
-                    case 'work_home':
-                        return '#9A6324';
-                        break;
-                    default:
-                        return '#EBEBE4';
-                }
+                getAssignedColor(max);
 
                 return 'yellow';
             });
@@ -162,37 +131,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('width', 16)
             .attr('height', 16)
             .attr('fill', (d) => {
-                switch (d) {
-                    case 'drovealone':
-                        return '#469990';
-                        break;
-                    case 'nowork':
-                        return '#aaffc3';
-                        break;
-                    case 'transit':
-                        return '#fffac8';
-                        break;
-                    case 'carpool_dr':
-                        return '#ffd8b1';
-                        break;
-                    case 'carpool_pa':
-                        return '#fabebe';
-                        break;
-                    case 'bicycle':
-                        return '#f58231';
-                        break;
-                    case 'motorcycle':
-                        return '#ffe119';
-                        break;
-                    case 'walk':
-                        return '#469990';
-                        break;
-                    case 'work_home':
-                        return '#9A6324';
-                        break;
-                    default:
-                        return '#EBEBE4';
-                }
+                getAssignedColor(d);
             });
 
         // legend value text
@@ -228,4 +167,38 @@ function processCsvRow(d, i, columns) {
 
     d.sum = s;
     return d;
+}
+
+function getAssignedColor(modeOfTravel) {
+    switch (modeOfTravel) {
+        case 'drovealone':
+            return '#469990';
+            break;
+        case 'nowork':
+            return '#aaffc3';
+            break;
+        case 'transit':
+            return '#fffac8';
+            break;
+        case 'carpool_dr':
+            return '#ffd8b1';
+            break;
+        case 'carpool_pa':
+            return '#fabebe';
+            break;
+        case 'bicycle':
+            return '#f58231';
+            break;
+        case 'motorcycle':
+            return '#ffe119';
+            break;
+        case 'walk':
+            return '#469990';
+            break;
+        case 'work_home':
+            return '#9A6324';
+            break;
+        default:
+            return '#EBEBE4';
+    }
 }
