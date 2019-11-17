@@ -32,6 +32,9 @@ d3.json("../data/geoJson/Community_Boundaries.geojson", (data) => {
         .attr("x", (d) => { return path.centroid(d)[0] })
         .attr("y", (d) => { return path.centroid(d)[1] })
         .attr("text-anchor", "middle")
-        .attr("fill", "grey")
+        .attr("fill", "#313131")
+        .attr("font-size", "8")
+        .attr("font-family", "Arial, Helvetica, sans-serif")
+        .attr("font-weight", "bold")
         .text(d => { return d.properties.comm_code })
 });
