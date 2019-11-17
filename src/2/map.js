@@ -1,5 +1,5 @@
-
-const width = 760, height = 700;
+const margin = {top: 0, right: 10, bottom: 200, left: 10};
+const width = 760, height = 640;
 
 const colors = [
     '#469990', '#aaffc3', '#ffd8b1', 
@@ -22,8 +22,10 @@ const cols = [
 
 let canvas = d3.select('#chart')
     .append('svg')
-       .attr('width', width)
-       .attr('height', height);
+       .attr('width', width + margin.left + margin.right)
+       .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 let legendContainer = d3.select('svg').append('g')
     .attr('transform', 'translate(' + 100 + ',0)');
