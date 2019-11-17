@@ -74,7 +74,6 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 }
                 return getAssignedColor(max);
 
-                return 'yellow';
             });
 
         // Set the d3 geo projection and path
@@ -210,31 +209,22 @@ function getAssignedColor(modeOfTravel) {
     switch (modeOfTravel) {
         case 'drovealone':
             return '#469990';
-            break;
         case 'nowork':
             return '#aaffc3';
-            break;
         case 'transit':
             return '#fffac8';
-            break;
         case 'carpool_dr':
             return '#ffd8b1';
-            break;
         case 'carpool_pa':
             return '#fabebe';
-            break;
         case 'bicycle':
             return '#f58231';
-            break;
         case 'motorcycle':
             return '#ffe119';
-            break;
         case 'walk':
             return '#42d4f4';
-            break;
         case 'work_home':
             return '#9A6324';
-            break;
         default:
             return '#EBEBE4';
     }
