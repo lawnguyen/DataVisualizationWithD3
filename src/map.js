@@ -37,6 +37,7 @@ d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         const travelModes = csvData.columns.filter((c) => {
             return cols.includes(c);
         });
+        travelModes.push("unavailable");
 
         // Create a dictionary mapping comm_code to csvData for faster lookup
         let communities = {};
