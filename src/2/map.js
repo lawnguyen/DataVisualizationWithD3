@@ -105,10 +105,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                     .append('svg:tspan')
                     .attr('x', 0)
                     .attr('dy', 20)
-                    .text('no census data available')
+                    .text('non-residential community')
                         .attr('x', 10);
                     tooltipWidth = 
-                        getTooltipWidth('no census data available', tooltipWidth);
+                        getTooltipWidth('non-residential community', tooltipWidth);
                 }
 
                 tooltip.select('rect')
@@ -139,7 +139,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
-            .text('CENSUS DATA');
+            .text('LEGEND');
 
         // create legend
         let legend = legendContainer.append('g')
@@ -147,7 +147,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('font-size', 10)
             .attr('text-anchor', 'end')
             .selectAll('g')
-            .data(['available', 'unavailable'])
+            .data(['residential', 'non-residential'])
             .enter()
             .append('g')
               .attr('transform', (d, i) => { return 'translate(0,' + i * 20 + ')'; });
@@ -159,7 +159,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('width', 16)
             .attr('height', 16)
             .attr('fill', (d) => {
-                if (d === 'unavailable') { return '#EBEBE4' }
+                if (d === 'non-residential') { return '#EBEBE4' }
                 return '#42d4f4'
             });
 
@@ -214,7 +214,8 @@ function getTooltipWidth(text, currentTooltipWidth) {
 
     tooltip.select('text').text(text);
 
-    const tempWidth = Math.round(tooltip.select('text').node().getComputedTextLength()) + 20;
+    const tempWidth = 
+        Math.round(tooltip.select('text').node().getComputedTextLength()) + 20;
     if (tempWidth > currentTooltipWidth) {
         d3.select('#temp').remove();
         return tempWidth;
