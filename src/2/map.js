@@ -53,7 +53,13 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         .enter()
         .append('g')
           .attr('class', 'community')
-          .attr('fill', '#EBEBE4');
+          .attr('fill', (d) => {
+            if (!(!!communities[d.properties.comm_code])) {
+                // 'Disabled' color for communities we don't have data for
+                return '#EBEBE4';
+            }
+            return '#42d4f4';
+          });
 
         // Set the d3 geo projection and path
         const projection = d3.geoMercator().fitSize([width, height], jsonData);
@@ -92,6 +98,17 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                             getTooltipWidth(c + ': ' + 
                                 communities[d.properties.comm_code][c], tooltipWidth);
                     });
+                } else {
+                    tooltipHeight = 40;
+
+                    tooltip.select('text')
+                    .append('svg:tspan')
+                    .attr('x', 0)
+                    .attr('dy', 20)
+                    .text('no census data available')
+                        .attr('x', 10);
+                    tooltipWidth = 
+                        getTooltipWidth('no census data available', tooltipWidth);
                 }
 
                 tooltip.select('rect')
@@ -106,6 +123,54 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('text-anchor', 'middle')
             .attr('class', 'text-label')
             .text(d => { return d.properties.comm_code });
+
+        // Label for each community
+        group.append('text')
+            .attr('x', (d) => { return path.centroid(d)[0] })
+            .attr('y', (d) => { return path.centroid(d)[1] })
+            .attr('text-anchor', 'middle')
+            .attr('class', 'text-label')
+            .text(d => { return d.properties.comm_code });
+
+        // legend label
+        legendContainer.append('text')
+            .attr('x', width - 200)
+            .attr('y', 22)
+            .attr('font-size', 9)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('CENSUS DATA');
+
+        // create legend
+        let legend = legendContainer.append('g')
+            .attr('font-family', 'sans-serif')
+            .attr('font-size', 10)
+            .attr('text-anchor', 'end')
+            .selectAll('g')
+            .data(['available', 'unavailable'])
+            .enter()
+            .append('g')
+              .attr('transform', (d, i) => { return 'translate(0,' + i * 20 + ')'; });
+
+        // legend value colors
+        legend.append('rect')
+            .attr('x', width - 200)
+            .attr('y', 30)
+            .attr('width', 16)
+            .attr('height', 16)
+            .attr('fill', (d) => {
+                if (d === 'unavailable') { return '#EBEBE4' }
+                return '#42d4f4'
+            });
+
+        // legend value text
+        legend.append('text')
+            .attr('x', width - 180)
+            .attr('y', 38)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .attr('text-anchor', 'end')
+            .text((d) => { return d; });
     });
 });
 
