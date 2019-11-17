@@ -4,7 +4,7 @@ const width = 760, height = 700;
 const colors = [
     '#469990', '#aaffc3', '#ffd8b1', 
     '#fabebe', '#f58231', '#f58231', 
-    '#ffe119', '#469990', '#9A6324'
+    '#ffe119', '#42d4f4', '#9A6324'
 ];
 
 // The columns from the dataset that we are interested in
@@ -230,7 +230,7 @@ function getAssignedColor(modeOfTravel) {
             return '#ffe119';
             break;
         case 'walk':
-            return '#469990';
+            return '#42d4f4';
             break;
         case 'work_home':
             return '#9A6324';
