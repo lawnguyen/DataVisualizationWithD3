@@ -28,8 +28,8 @@ let canvas = d3.select('#chart')
 let legendContainer = d3.select('svg').append('g')
     .attr('transform', 'translate(' + 100 + ',0)');
 
-d3.json('../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
-    d3.csv('../data/Modes_of_Travel.csv', (d, i, columns) => {
+d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
+    d3.csv('../../data/Modes_of_Travel.csv', (d, i, columns) => {
         return processCsvRow(d, i, columns);
     }, (error, csvData) => {
         if (error) throw error;
