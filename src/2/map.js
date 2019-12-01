@@ -171,6 +171,15 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('class', 'legend-text')
             .attr('text-anchor', 'end')
             .text((d) => { return d; });
+
+        // Data source text
+        legendContainer.append('text')
+            .attr('x', 0)
+            .attr('y', height)
+            .attr('font-size', 12)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('Source: Calgary Civic Census 2016');
     });
 });
 
