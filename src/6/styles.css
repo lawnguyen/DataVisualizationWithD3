@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h3 {
+    text-align: center;
+}
+
+h3 {
+    opacity: 0.5;
+}
+
+#chart {
+    text-align: center;
+}
+
+#graphPlot {
+    text-align: center;
+    font-size: 12px;
+}
+
+.text-label {
+    fill: black;
+    stroke: black;
+    stroke-width: 0;
+    font-size: 7;
+    font-weight: bold;
+}
+
+.community {
+    stroke: black;
+    stroke-width: 0.5;
+}
+
+.community:hover {
+    fill: #D64933
+}
+
+.legend-text {
+    font-weight: bold;
+    text-anchor: start;
+  }
+  

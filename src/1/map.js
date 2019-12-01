@@ -114,14 +114,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
-            .text('MAJORITY MODE OF');
-        legendContainer.append('text')
-            .attr('x', width - 200)
-            .attr('y', 22)
-            .attr('font-size', 9)
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .text('TRAVEL TO WORK');
+            .text('LEGEND');
 
         // create legend
         let legend = legendContainer.append('g')
@@ -206,6 +199,7 @@ function processCsvRow(d, i, columns) {
 }
 
 function getAssignedColor(modeOfTravel) {
+    return '#EBEBE4';
     switch (modeOfTravel) {
         case 'drovealone':
             return '#469990';
