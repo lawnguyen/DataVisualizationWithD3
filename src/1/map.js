@@ -151,7 +151,29 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .attr('text-anchor', 'end')
-            .text((d) => { return d; });
+            .text((d) => {
+                switch (d) {
+                    case 'drovealone':
+                        return 'drove alone';
+                    case 'nowork':
+                        return 'unemployed';
+                    case 'transit':
+                        return d;
+                    case 'carpool_dr':
+                        return 'carpool (driver)';
+                    case 'carpool_pa':
+                        return 'carpool (rider)';
+                    case 'bicycle':
+                        return d;
+                    case 'motorcycle':
+                        return d;
+                    case 'walk':
+                        return d;
+                    case 'work_home':
+                        return 'works at home';
+                }
+                return d;
+            });
     });
 });
 
