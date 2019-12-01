@@ -92,10 +92,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
-                        .text(c + ': ' + communities[d.properties.comm_code][c])
+                        .text(getHumanReadableName(c) + ': ' + communities[d.properties.comm_code][c])
                           .attr('x', 10);
                         tooltipWidth = 
-                            getTooltipWidth(c + ': ' + 
+                            getTooltipWidth(getHumanReadableName(c) + ': ' + 
                                 communities[d.properties.comm_code][c], tooltipWidth);
                     });
                 } else {
@@ -222,6 +222,30 @@ function getTooltipWidth(text, currentTooltipWidth) {
     }
     d3.select('#temp').remove();
     return currentTooltipWidth;
+}
+
+function getHumanReadableName(col) {
+    switch (col) {
+        case 'drovealone':
+            return 'drove alone';
+        case 'nowork':
+            return 'unemployed';
+        case 'transit':
+            return col;
+        case 'carpool_dr':
+            return 'carpool (driver)';
+        case 'carpool_pa':
+            return 'carpool (rider)';
+        case 'bicycle':
+            return col;
+        case 'motorcycle':
+            return col;
+        case 'walk':
+            return col;
+        case 'work_home':
+            return 'works at home';
+    }
+    return col;
 }
 
 function processCsvRow(d, i, columns) {
