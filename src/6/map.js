@@ -136,25 +136,40 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .text(d => { return d.properties.comm_code });
 
         // legend label
-        legendContainer.append('text')
+    legendContainer.append('text')
         .attr('x', width - 200)
         .attr('y', 9.5)
         .attr('font-size', 9)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('PERCENTAGE OF');
-        legendContainer.append('text')
+    legendContainer.append('text')
         .attr('x', width - 200)
         .attr('y', 22)
         .attr('font-size', 9)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('CYCLING TO WORK');
+    legendContainer.append('text')
+        .attr('x', width - 200)
+        .attr('y', 34.5)
+        .attr('font-size', 9)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('(OF TOTAL THAT CYCLE');
+    legendContainer.append('text')
+        .attr('x', width - 200)
+        .attr('y', 47)
+        .attr('font-size', 9)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('TO WORK IN CALGARY)');
 
     // create legend
     let legend = legendContainer.append('g')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
+        .attr('transform', 'translate(0, 24)')  // Make space for legend title
         .attr('text-anchor', 'end')
         .selectAll('g')
         .data([
@@ -240,6 +255,15 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             }
             return ('-  ' + d); 
         });
+
+    // Data source text
+    legendContainer.append('text')
+        .attr('x', 0)
+        .attr('y', height)
+        .attr('font-size', 12)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('Source: Calgary Civic Census 2016');
     //--------------------------------------------------------------------
 
     let graphPlot = createPlot(communities);
