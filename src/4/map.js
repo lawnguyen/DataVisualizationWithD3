@@ -1,4 +1,4 @@
-const margin = {top: 0, right: 10, bottom: 200, left: 10};
+const margin = { top: 0, right: 10, bottom: 200, left: 10 };
 const width = 760, height = 640;
 
 // The columns from the dataset that we are interested in
