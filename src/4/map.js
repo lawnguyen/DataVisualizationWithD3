@@ -132,11 +132,26 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .text('CYCLING TO WORK');
+        legendContainer.append('text')
+            .attr('x', width - 200)
+            .attr('y', 34.5)
+            .attr('font-size', 9)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('(OF TOTAL THAT CYCLE');
+        legendContainer.append('text')
+            .attr('x', width - 200)
+            .attr('y', 47)
+            .attr('font-size', 9)
+            .attr('dy', '0.32em')
+            .attr('class', 'legend-text')
+            .text('TO WORK IN CALGARY)');
 
         // create legend
         let legend = legendContainer.append('g')
             .attr('font-family', 'sans-serif')
             .attr('font-size', 10)
+            .attr('transform', 'translate(0, 24)')  // Make space for the legend title
             .attr('text-anchor', 'end')
             .selectAll('g')
             .data([
