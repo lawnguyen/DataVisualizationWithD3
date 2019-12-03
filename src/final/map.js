@@ -34,6 +34,8 @@ let canvas2 = d3.select('#graphPlot')
 let legendContainer = d3.select('svg').append('g')
     .attr('transform', 'translate(' + 100 + ',0)');
 
+let zoom;
+
 d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
     d3.csv('../../data/Modes_of_Travel.csv', (d, i, columns) => {
         return processCsvRow(d, i, columns);
@@ -79,9 +81,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('class', 'area')
 
         // Zoom and pan map
-        canvas.call(d3.zoom().on('zoom', () => {
+        zoom = d3.zoom().scaleExtent([1, 8]).on('zoom', () => {
             group.attr('transform', d3.event.transform)
-        }));
+        })
+        canvas.call(zoom);
 
         // Add tooltip to the each community path element
         let tooltip = createTooltip('map');
@@ -546,4 +549,11 @@ function processCsvRow(d, i, columns) {
     bicyclistTotal += d.bicycle;
     d.sum = s;
     return d;
+}
+
+/**
+ * Reset the zoom/pan
+ */
+function resetZoom() {
+    canvas.call(zoom.transform, d3.zoomIdentity.scale(1));
 }
