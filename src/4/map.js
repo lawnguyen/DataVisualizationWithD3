@@ -109,14 +109,6 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('class', 'text-label')
             .text(d => { return d.properties.comm_code });
 
-        // Label for each community
-        group.append('text')
-            .attr('x', (d) => { return path.centroid(d)[0] })
-            .attr('y', (d) => { return path.centroid(d)[1] })
-            .attr('text-anchor', 'middle')
-            .attr('class', 'text-label')
-            .text(d => { return d.properties.comm_code });
-
         // legend label
         legendContainer.append('text')
             .attr('x', width - 200)
