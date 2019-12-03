@@ -134,6 +134,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('y', (d) => { return path.centroid(d)[1] })
             .attr('text-anchor', 'middle')
             .attr('class', 'text-label')
+            .attr('font-weight', 'bold')
             .text(d => { return d.properties.comm_code });
 
         // Label for each community
@@ -145,31 +146,28 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .text(d => { return d.properties.comm_code });
 
         // legend label
+        const x = width - 220;
         legendContainer.append('text')
-            .attr('x', width - 200)
+            .attr('x', x)
             .attr('y', 9.5)
-            .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .text('PERCENTAGE OF');
         legendContainer.append('text')
-            .attr('x', width - 200)
+            .attr('x', x)
             .attr('y', 22)
-            .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .text('CYCLING TO WORK');
         legendContainer.append('text')
-            .attr('x', width - 200)
+            .attr('x', x)
             .attr('y', 34.5)
-            .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .text('(OF TOTAL THAT CYCLE');
         legendContainer.append('text')
-            .attr('x', width - 200)
+            .attr('x', x)
             .attr('y', 47)
-            .attr('font-size', 9)
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
             .text('TO WORK IN CALGARY)');
@@ -198,7 +196,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
         // legend value colors
         legend.append('rect')
-            .attr('x', width - 200)
+            .attr('x', x)
             .attr('y', (d) => {
                 if (d === 'non-residential') {
                     return 50;
@@ -210,7 +208,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 if (d === 'non-residential') {
                     return 16;
                 }
-                return 20;
+                return 21;
             })
             .attr('stroke-width', (d) => {
                 if (d === 'non-residential') {
@@ -247,12 +245,12 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
         // legend value text
         legend.append('text')
-            .attr('x', width - 185)
+            .attr('x', x + 15)
             .attr('y', (d) => {
                 if (d === 'non-residential') {
                     return 59;
                 }
-                return 49;
+                return 50;
             })
             .attr('dy', '0.32em')
             .attr('class', 'legend-text')
