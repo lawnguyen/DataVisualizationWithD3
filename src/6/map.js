@@ -416,7 +416,7 @@ function createPlot(communities){
     yScale.domain([minY, maxY]);
     let graphPlot = canvas2;
 
-    // y-axis
+    // x-axis
     graphPlot.append("g")
         .attr("class", "x-axis")
         .attr("transform", "translate(50," + (height/2-100) + ")")
@@ -424,10 +424,10 @@ function createPlot(communities){
         .selectAll("text")
             .each(function(d){
                 var ydiff = (keys.indexOf(d)*MULTIPLIER)%3;
-                //text
+                // text
                 d3.select(this).attr("transform", "translate(0,"+20*(ydiff + 1) + ") rotate(-85)");
                 d3.select(this).attr('font-size', 8);
-                //line
+                // line
                 d3.select(this.parentNode)
                     .append("line")
                     .attr("x1", 6 + 0.01*0.087*xScale(d))  
