@@ -145,8 +145,17 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('class', 'text-label')
             .text(d => { return d.properties.comm_code });
 
-        // legend label
+        /* Legend */
         const x = width - 220;
+
+        // Legend background
+        canvas.append('rect')
+            .attr('x', x + 85)
+            .attr('width', 150)
+            .attr('height', 220)
+            .attr('fill', 'white');
+
+        // legend label
         legendContainer.append('text')
             .attr('x', x)
             .attr('y', 9.5)
@@ -266,10 +275,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         // Data source text
         legendContainer.append('text')
             .attr('x', 0)
-            .attr('y', height)
+            .attr('y', height + margin.bottom - 10)
             .attr('font-size', 12)
+            .attr('font-weight', 'bold')
             .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
             .text('Source: Calgary Civic Census 2016');
 
 
@@ -321,32 +330,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 tooltip2.select('rect')
                     .attr('width', tooltipWidth)
                     .attr('height', tooltipHeight);
-            })
-
-        /*
-        // draw legend
-        let legend2 = graphPlot.selectAll(".legend2")
-            .enter().append("g")
-            .attr("class", "legend2")
-            .attr("transform", function(d, i) { return "translate(-500," + i * 20 + ")"; });
-    
-        // draw legend colored rectangles
-        legend2.append("rect")
-            .attr("x", width - 18)
-            .attr("width", 18)
-            .attr("height", 18)
-            .style("font-size", "12px")
-            .style("fill", '#cc6633');
-    
-        // draw legend text
-        legend2.append("text")
-            .attr("x", width - 24)
-            .attr("y", 9)
-            .attr("dy", ".35em")
-            .style("font-size", "12px")
-            .style("text-anchor", "end")
-            .text(function(d) { return d;})
-        */
+            });
     });
 });
 
