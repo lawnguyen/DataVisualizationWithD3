@@ -8,8 +8,13 @@
     <h1>How Calgarians Travel to Work (2016) - By Community</h1>
     <h3>*Hover for details</h3>
     <button type="button" onclick="resetZoom()">Reset</button>
-    <div id="chart"></div>
-    <div id="graphPlot"></div>
+    <div class="flex-container">
+      <div id="map"></div>
+      <div>
+        <div id="graphPlot"></div>
+        <div id="legend"></div>
+      </div>
+    </div>
   <script src='map.js'></script>
 </body>
 </html>

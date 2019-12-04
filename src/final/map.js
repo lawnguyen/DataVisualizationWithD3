@@ -1,5 +1,9 @@
-const margin = { top: 0, right: 10, bottom: 100, left: 10 };
-const width = 1024, height = 768;
+const mapMargin = { top: 0, right: 10, bottom: 100, left: 10 };
+const plotMargin = { top: 5, right: 10, bottom: 100, left: 10 };
+const legendMargin = { top: 0, right: 10, bottom: 100, left: 10 };
+const mapDimensions = { width: 1024, height: 768 };
+const plotDimensions = { width: 1024, height: 400 };
+const legendDimensions = { width: 150, height: 220 };
 
 // The columns from the dataset that we are interested in
 const cols = [
@@ -17,19 +21,25 @@ const cols = [
 let selected = null;
 let bicyclistTotal = 0;
 
-let canvas = d3.select('#chart')
+let mapSVG = d3.select('#map')
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
+    .attr('width', mapDimensions.width + mapMargin.left + mapMargin.right)
+    .attr('height', mapDimensions.height + mapMargin.top + mapMargin.bottom)
     .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-let canvas2 = d3.select('#graphPlot')
+    .attr('transform', 'translate(' + mapMargin.left + ',' + mapMargin.top + ')');
+
+let plotSVG = d3.select('#graphPlot')
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
+    .attr('width', mapDimensions.width + plotMargin.left + plotMargin.right)
+    .attr('height', mapDimensions.height + plotMargin.top + plotMargin.bottom)
     .append('g')
     .attr('class', 'graphPlot')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    .attr('transform', 'translate(' + plotMargin.left + ',' + plotMargin.top + ')');
+
+let legendSVG = d3.select('#legend')
+    .append('svg')
+    .attr('width', legendDimensions.width + legendMargin.left + legendMargin.right)
+    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom)
 
 let legendContainer = d3.select('svg').append('g')
     .attr('transform', 'translate(' + 100 + ',0)');
@@ -57,7 +67,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
          * Map
          */
         // Add a <g> element for each of the communities in the data
-        let group = canvas
+        let group = mapSVG
             .selectAll('g')
             .data(jsonData.features)
             .enter()
@@ -72,7 +82,8 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             });
 
         // Set the d3 geo projection and path
-        const projection = d3.geoMercator().fitSize([width, height], jsonData);
+        const projection = d3.geoMercator()
+            .fitSize([mapDimensions.width, mapDimensions.height], jsonData);
         const path = d3.geoPath().projection(projection);
 
         // Append path to all the <g> elements
@@ -84,7 +95,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         zoom = d3.zoom().scaleExtent([1, 8]).on('zoom', () => {
             group.attr('transform', d3.event.transform)
         })
-        canvas.call(zoom);
+        mapSVG.call(zoom);
 
         // Add tooltip to the each community path element
         let tooltip = createTooltip('map');
@@ -96,7 +107,8 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 let tooltipWidth = 0;
                 let xPosition = d3.mouse(this)[0] + 10;
                 let yPosition = d3.mouse(this)[1] + 20;
-                tooltip.attr('transform', 'translate(' + xPosition + ',' + yPosition + ')');
+                tooltip.attr(
+                    'transform', 'translate(' + xPosition + ',' + yPosition + ')');
                 tooltip.select('text').text(d.properties.name);
                 tooltipWidth = getTooltipWidth(d.properties.name, tooltipWidth);
 
@@ -141,10 +153,10 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .text(d => { return d.properties.comm_code });
 
         /* Legend */
-        const x = width - 220;
+        const x = mapDimensions.width - 220;
 
         // Legend background
-        canvas.append('rect')
+        mapSVG.append('rect')
             .attr('x', x + 85)
             .attr('width', 150)
             .attr('height', 220)
@@ -270,7 +282,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         // Data source text
         legendContainer.append('text')
             .attr('x', 0)
-            .attr('y', height + margin.bottom - 10)
+            .attr('y', mapDimensions.height + mapMargin.bottom - 10)
             .attr('font-size', 12)
             .attr('font-weight', 'bold')
             .attr('dy', '0.32em')
@@ -291,7 +303,8 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 let tooltipWidth = 0;
                 let xPosition = d3.mouse(this)[0] + 10;
                 let yPosition = d3.mouse(this)[1] + 20;
-                tooltip2.attr('transform', 'translate(' + xPosition + ',' + yPosition + ')');
+                tooltip2.attr(
+                    'transform', 'translate(' + xPosition + ',' + yPosition + ')');
                 tooltip2.select('text').text(communities[d.comm_code].name);
                 tooltipWidth =
                     getTooltipWidth(communities[d.comm_code].name, tooltipWidth);
@@ -336,7 +349,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
  */
 function createTooltip(chart) {
     // create tooltip
-    let tooltip = (chart === 'map' ? canvas : canvas2)
+    let tooltip = (chart === 'map' ? mapSVG : plotSVG)
         .append('g')
         .attr('class', 'tooltip')
         .style('display', 'none');
@@ -412,28 +425,31 @@ function createPlot(communities) {
         if (minY >= temp) minY = temp;
         if (maxY <= temp) maxY = temp;
     }
+
     // setup x
-    let xScale = d3.scaleBand().range([0, (keys.length - 1) * MULTIPLIER]),// value -> display
+    let xScale = d3.scaleBand().range([0, (keys.length - 1) * MULTIPLIER]), // value -> display
         xAxis = d3.axisBottom().scale(xScale).tickSize(0);
     // setup y
     let yValue = (d) => { return d.bicycle }, // data -> value
-        yScale = d3.scaleLinear().range([height / 2 - 100, 0]), // value -> display
+        yScale = 
+            d3.scaleLinear().range([plotDimensions.height, 0]), // value -> display
         yAxis = d3.axisLeft().scale(yScale);
 
     xScale.domain(keys);
-    yScale.domain([minY, maxY]);
-    let graphPlot = canvas2;
+    yScale.domain([minY, Math.ceil(maxY / 50) * 50]);   // Round maxY up to nearest 50
+    let graphPlot = plotSVG;
 
     // x-axis
     graphPlot.append("g")
         .attr("class", "x-axis")
-        .attr("transform", "translate(50," + (height / 2 - 100) + ")")
+        .attr("transform", "translate(50," + (plotDimensions.height) + ")")
         .call(xAxis)
         .selectAll("text")
         .each(function (d) {
             let ydiff = (keys.indexOf(d) * MULTIPLIER) % 3;
             // text
-            d3.select(this).attr("transform", "translate(0," + 20 * (ydiff + 1) + ") rotate(-85)");
+            d3.select(this).attr(
+                "transform", "translate(0," + 20 * (ydiff + 1) + ") rotate(-85)");
             d3.select(this).attr('font-size', 8);
             // line
             d3.select(this.parentNode)
@@ -447,13 +463,11 @@ function createPlot(communities) {
         })
     graphPlot.append("text")
         .attr("class", "label")
-        .attr("x", width / 2)
+        .attr("x", plotDimensions.width / 2)
         .attr("y", -6)
         .style("text-anchor", "end")
         .text("Communities");
 
-    //yHeight = d3.select('.y-axis').node().getBoundingClientRect().height;
-    // y-axis
     graphPlot.append("g")
         .attr("class", "y-axis")
         .attr("transform", "translate(50,0)")
@@ -473,7 +487,9 @@ function createPlot(communities) {
         .attr("x", (d) => { return 50 + 2 + xScale(d.comm_code); })
         .attr("y", (d) => { return yScale(yValue(d)); })
         .attr("width", 5)
-        .attr("height", (d) => { return (height / 2 - 100) - yScale(yValue(d)); })
+        .attr("height", (d) => { 
+            return (plotDimensions.height) - yScale(yValue(d)); 
+        })
         .attr('fill', (d) => {
             if (!(!!communities[d.comm_code].comm_code)) {
                 // 'Disabled' color for communities we don't have data for
@@ -547,5 +563,5 @@ function processCsvRow(d, i, columns) {
  * Reset the zoom/pan
  */
 function resetZoom() {
-    canvas.call(zoom.transform, d3.zoomIdentity.scale(1));
+    mapSVG.call(zoom.transform, d3.zoomIdentity.scale(1));
 }
