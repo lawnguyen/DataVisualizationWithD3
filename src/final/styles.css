@@ -53,6 +53,12 @@ h3 {
     font-size: 14;
 }
 
+.legend-value-text {
+    font-weight: normal;
+    text-anchor: start;
+    font-size: 14;
+}
+
 .source-label {
     font-weight: bold;
     font-size: 14;

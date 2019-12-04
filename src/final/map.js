@@ -1,14 +1,14 @@
 /**
  * Margin constants
  */
-const mapMargin = { top: 10, right: 10, bottom: 10, left: 10 };
+const mapMargin = { top: 10, right: 50, bottom: 10, left: 50 };
 const plotMargin = { top: 5, right: 10, bottom: 100, left: 10 };
 const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
 
 /**
  * SVG dimension constants
  */
-const mapDimensions = { width: 1024, height: 768 };
+const mapDimensions = { width: 640, height: 768 };
 const plotDimensions = { width: 1320, height: 420 };
 const legendDimensions = { width: 160, height: 220 };
 
@@ -93,7 +93,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
         // Set the d3 geo projection and path
         const projection = d3.geoMercator()
-            .fitSize([mapDimensions.width, mapDimensions.height], jsonData);
+            .fitExtent([[70, 10], [mapDimensions.width-120, mapDimensions.height-10]], jsonData);
         const path = d3.geoPath().projection(projection);
 
         // Append path to all the <g> elements
@@ -286,7 +286,7 @@ function getTooltipWidth(text, currentTooltipWidth) {
  */
 function createPlot(communities) {
     // setup
-    const MULTIPLIER = 5;
+    const MULTIPLIER = 4.3;
     let keys = Object.keys(communities);
 
     let data = [];
@@ -325,7 +325,7 @@ function createPlot(communities) {
             let ydiff = (keys.indexOf(d) * MULTIPLIER) % 3;
             // text
             d3.select(this).attr(
-                "transform", "translate(0," + 20 * (ydiff + 1) + ") rotate(-85)");
+                "transform", "translate(0," + 20 * (ydiff + 1) + ") rotate(-90)");
             d3.select(this).attr('font-size', 8);
             // line
             d3.select(this.parentNode)
@@ -487,10 +487,10 @@ function createLegend() {
             if (d === 'non-residential') {
                 return 59;
             }
-            return 50;
+            return 51;
         })
         .attr('dy', '0.32em')
-        .attr('class', 'legend-text')
+        .attr('class', 'legend-value-text')
         .attr('text-anchor', 'end')
         .attr('xml:space', 'preserve')
         .text((d) => {
