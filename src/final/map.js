@@ -336,7 +336,7 @@ function createPlot(communities) {
     // x-axis
     graphPlot.append("g")
         .attr("class", "x-axis")
-        .attr("transform", "translate(50," + (plotDimensions.height) + ")")
+        .attr("transform", "translate(46," + (plotDimensions.height) + ")")
         .call(xAxis)
         .selectAll("text")
         .each(function (d) {
