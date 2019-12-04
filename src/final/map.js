@@ -84,10 +84,6 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .append('g')
             .attr('class', 'community')
             .attr('fill', (d) => {
-                if (!(!!communities[d.properties.comm_code])) {
-                    // 'Disabled' color for communities we don't have data for
-                    return '#f7fbff';
-                }
                 return getAssignedColor(d.properties.comm_code, communities);
             });
 
@@ -421,10 +417,6 @@ function createPlot(communities) {
             return (plotDimensions.height) - yScale(yValue(d)); 
         })
         .attr('fill', (d) => {
-            if (!(!!communities[d.comm_code].comm_code)) {
-                // 'Disabled' color for communities we don't have data for
-                return '#f7fbff';
-            }
             return getAssignedColor(d.comm_code, communities);
         });
     return graphPlot;
@@ -563,6 +555,11 @@ function createLegend() {
  * @param {Object} communities - Object containing community data
  */
 function getAssignedColor(commCode, communities) {
+    if (!(!!communities[commCode])) {
+        // 'Disabled' color for communities we don't have data for
+        return '#f7fbff';
+    }
+
     let percentCycling =
         communities[commCode].bicycle / bicyclistTotal * 100;
 
