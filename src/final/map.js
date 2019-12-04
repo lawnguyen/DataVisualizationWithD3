@@ -304,8 +304,11 @@ function getTooltipWidth(text, currentTooltipWidth) {
  */
 function createPlot(communities) {
     // setup
-    const MULTIPLIER = 4.4;
-    let keys = Object.keys(communities);
+    const MULTIPLIER = 4.75;
+    let keys = Object.keys(communities).filter(k => { 
+        // Filter out communities with 0 values for that mode of travel
+        return communities[k].bicycle > 0 
+    });
 
     let data = [];
     let minY = 0, maxY = 0;

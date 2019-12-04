@@ -44,7 +44,7 @@ h3 {
 }
 
 .community:hover {
-    fill: #D64933
+    fill: red;
 }
 
 .legend-text {
