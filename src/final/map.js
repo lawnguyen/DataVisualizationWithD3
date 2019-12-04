@@ -1,8 +1,15 @@
+/**
+ * Margin constants
+ */
 const mapMargin = { top: 0, right: 10, bottom: 100, left: 10 };
 const plotMargin = { top: 5, right: 10, bottom: 100, left: 10 };
-const legendMargin = { top: 0, right: 10, bottom: 100, left: 10 };
+const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
+
+/**
+ * SVG dimension constants
+ */
 const mapDimensions = { width: 1024, height: 768 };
-const plotDimensions = { width: 1024, height: 400 };
+const plotDimensions = { width: 1024, height: 420 };
 const legendDimensions = { width: 150, height: 220 };
 
 // The columns from the dataset that we are interested in
@@ -20,7 +27,11 @@ const cols = [
 
 let selected = null;
 let bicyclistTotal = 0;
+let zoom;
 
+/**
+ * Create SVGs
+ */
 let mapSVG = d3.select('#map')
     .append('svg')
     .attr('width', mapDimensions.width + mapMargin.left + mapMargin.right)
@@ -39,12 +50,9 @@ let plotSVG = d3.select('#graphPlot')
 let legendSVG = d3.select('#legend')
     .append('svg')
     .attr('width', legendDimensions.width + legendMargin.left + legendMargin.right)
-    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom)
+    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom);
 
-let legendContainer = d3.select('svg').append('g')
-    .attr('transform', 'translate(' + 100 + ',0)');
-
-let zoom;
+let legendContainer = legendSVG.append('g');
 
 d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
     d3.csv('../../data/Modes_of_Travel.csv', (d, i, columns) => {
@@ -153,7 +161,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .text(d => { return d.properties.comm_code });
 
         /* Legend */
-        const x = mapDimensions.width - 220;
+        const x = 0;
 
         // Legend background
         mapSVG.append('rect')
