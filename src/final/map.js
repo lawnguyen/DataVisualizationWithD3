@@ -336,7 +336,7 @@ function createPlot(communities) {
                 .attr("y2", 10 + 18 * ydiff)
                 .attr("stroke-width", 0.4)
                 .attr("stroke", "black");
-        })
+        });
     graphPlot.append("text")
         .attr("class", "label")
         .attr("x", plotDimensions.width / 2)
@@ -347,7 +347,7 @@ function createPlot(communities) {
     graphPlot.append("g")
         .attr("class", "y-axis")
         .attr("transform", "translate(50,0)")
-        .call(yAxis)
+        .call(yAxis);
     graphPlot.append("text")
         .attr("class", "label")
         .attr("transform", "translate(0,50) rotate(-90)")
