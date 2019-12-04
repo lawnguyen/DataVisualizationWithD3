@@ -9,7 +9,7 @@ const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
  * SVG dimension constants
  */
 const mapDimensions = { width: 1024, height: 768 };
-const plotDimensions = { width: 1024, height: 420 };
+const plotDimensions = { width: 1200, height: 420 };
 const legendDimensions = { width: 160, height: 220 };
 
 // The columns from the dataset that we are interested in
@@ -286,7 +286,7 @@ function getTooltipWidth(text, currentTooltipWidth) {
  */
 function createPlot(communities) {
     // setup
-    const MULTIPLIER = 4;
+    const MULTIPLIER = 5;
     let keys = Object.keys(communities);
 
     let data = [];

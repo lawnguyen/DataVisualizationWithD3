@@ -21,6 +21,10 @@ h3 {
     border: 1px solid black;
 }
 
+#legend {
+    width: fit-content;
+}
+
 #graphPlot {
     text-align: center;
     font-size: 12px;
