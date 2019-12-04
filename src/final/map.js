@@ -93,13 +93,19 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
         // Set the d3 geo projection and path
         const projection = d3.geoMercator()
-            .fitExtent([[70, 10], [mapDimensions.width-120, mapDimensions.height-10]], jsonData);
+            .fitExtent([
+                [70, 10], 
+                [mapDimensions.width-120, mapDimensions.height-10]
+            ], jsonData);
         const path = d3.geoPath().projection(projection);
 
         // Append path to all the <g> elements
         let areas = group.append('path')
             .attr('d', path)
             .attr('class', 'area')
+            .attr('id', d => { 
+                return 'MAPID' + d.properties.comm_code; 
+            });
 
         // Zoom and pan map
         zoom = d3.zoom().scaleExtent([1, 8]).on('zoom', () => {
@@ -109,8 +115,19 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
         // Add tooltip to the each community path element
         let tooltip = createTooltip('map');
-        areas.on('mouseover', () => { tooltip.style('display', null); })
-            .on('mouseout', () => { tooltip.style('display', 'none'); })
+        areas.on('mouseover', function(d) { 
+                tooltip.style('display', null);
+
+                // Highlight bar
+                d3.select('#BARID' + d.properties.comm_code).attr('fill', 'red');
+            })
+            .on('mouseout', function(d) { 
+                tooltip.style('display', 'none');
+
+                // De-highlight bar
+                d3.select('#BARID' + d.properties.comm_code)
+                    .attr('fill', getAssignedColor(d.properties.comm_code, communities));
+            })
             .on('mousemove', function (d) {
                 let dataIsAvailable = !!communities[d.properties.comm_code];
                 let tooltipHeight = 20;
@@ -180,8 +197,19 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         let graphPlot = createPlot(communities);
         let tooltip2 = createTooltip('plots');
         graphPlot.selectAll('.bar')
-            .on('mouseover', () => { tooltip2.style('display', null); })
-            .on('mouseout', () => { tooltip2.style('display', 'none'); })
+            .on('mouseover', function(d) { 
+                tooltip2.style('display', null);
+
+                // Highlight on map
+                d3.select('#MAPID' + d.comm_code).attr('fill', 'red');
+            })
+            .on('mouseout', function(d) { 
+                tooltip2.style('display', 'none');
+
+                // De-highlight on map
+                d3.select('#MAPID' + d.comm_code)
+                    .attr('fill', getAssignedColor(d.comm_code, communities));
+            })
             .on('mousemove', function (d) {
                 let dataIsAvailable = !!communities[d.comm_code];
                 let tooltipHeight = 20;
@@ -312,7 +340,7 @@ function createPlot(communities) {
 
     let data = [];
     let minY = 0, maxY = 0;
-    for (let k in communities) {
+    keys.forEach((k) => {
         data.push({
             "comm_code": k,
             "bicycle": communities[k].bicycle,
@@ -321,7 +349,7 @@ function createPlot(communities) {
         temp = communities[k].bicycle;
         if (minY >= temp) minY = temp;
         if (maxY <= temp) maxY = temp;
-    }
+    });
 
     // setup x
     let xScale = d3.scaleBand().range([0, (keys.length - 1) * MULTIPLIER]), // value -> display
@@ -381,7 +409,12 @@ function createPlot(communities) {
     graphPlot.selectAll(".bar")
         .data(data).enter().append("rect")
         .attr("class", "bar")
-        .attr("x", (d) => { return 50 + 2 + xScale(d.comm_code); })
+        .attr('id', (d) => { 
+            return 'BARID' + d.comm_code;
+        })
+        .attr("x", (d) => { 
+            return 50 + 2 + xScale(d.comm_code); 
+        })
         .attr("y", (d) => { return yScale(yValue(d)); })
         .attr("width", 5)
         .attr("height", (d) => { 
