@@ -116,12 +116,15 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
                 // Highlight bar
                 d3.select('#BARID' + d.properties.comm_code).attr('fill', 'red');
+                d3.select('#MAPID' + d.properties.comm_code).attr('fill', 'red');
             })
             .on('mouseout', function(d) { 
                 tooltip.style('display', 'none');
 
                 // De-highlight bar
                 d3.select('#BARID' + d.properties.comm_code)
+                    .attr('fill', getAssignedColor(d.properties.comm_code, communities));
+                d3.select('#MAPID' + d.properties.comm_code)
                     .attr('fill', getAssignedColor(d.properties.comm_code, communities));
             })
             .on('mousemove', function (d) {
@@ -198,12 +201,15 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
 
                 // Highlight on map
                 d3.select('#MAPID' + d.comm_code).attr('fill', 'red');
+                d3.select('#BARID' + d.comm_code).attr('fill', 'red');
             })
             .on('mouseout', function(d) { 
                 tooltip2.style('display', 'none');
 
                 // De-highlight on map
                 d3.select('#MAPID' + d.comm_code)
+                    .attr('fill', getAssignedColor(d.comm_code, communities));
+                d3.select('#BARID' + d.comm_code)
                     .attr('fill', getAssignedColor(d.comm_code, communities));
             })
             .on('mousemove', function (d) {
