@@ -43,7 +43,7 @@ h3 {
     stroke-width: 0.5;
 }
 
-.community:hover {
+.community:hover, .bar:hover {
     fill: red;
 }
 
