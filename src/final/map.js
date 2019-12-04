@@ -9,7 +9,7 @@ const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
  * SVG dimension constants
  */
 const mapDimensions = { width: 640, height: 768 };
-const plotDimensions = { width: 1320, height: 420 };
+const plotDimensions = { width: 1120, height: 420 };
 const legendDimensions = { width: 160, height: 220 };
 
 // The columns from the dataset that we are interested in
@@ -123,18 +123,27 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 tooltipWidth = getTooltipWidth(d.properties.name, tooltipWidth);
 
                 if (dataIsAvailable) {
-                    tooltipHeight = 40;
+                    tooltipHeight = 60;
 
                     tooltip.select('text')
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
                         .text(communities[d.properties.comm_code].bicycle +
-                            ' people who live here bicycle to work')
+                            ' people who live here')
                         .attr('x', 10);
                     tooltipWidth =
                         getTooltipWidth(communities[d.properties.comm_code].bicycle +
-                            ' people who live here bicycle to work', tooltipWidth);
+                            ' people who live here', tooltipWidth);
+
+                    tooltip.select('text')
+                        .append('svg:tspan')
+                        .attr('x', 0)
+                        .attr('dy', 20)
+                        .text('bicycle to work')
+                        .attr('x', 10);
+                    tooltipWidth =
+                        getTooltipWidth('bicycle to work', tooltipWidth);
                 } else {
                     tooltipHeight = 40;
 
@@ -186,18 +195,27 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                     getTooltipWidth(communities[d.comm_code].name, tooltipWidth);
 
                 if (dataIsAvailable) {
-                    tooltipHeight = 40;
+                    tooltipHeight = 60;
 
                     tooltip2.select('text')
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
                         .text(communities[d.comm_code].bicycle +
-                            ' people who live here bicycle to work')
+                            ' people who live here')
                         .attr('x', 10);
                     tooltipWidth =
                         getTooltipWidth(communities[d.comm_code].bicycle +
-                            ' people who live here bicycle to work', tooltipWidth);
+                            ' people who live here', tooltipWidth);
+
+                    tooltip2.select('text')
+                        .append('svg:tspan')
+                        .attr('x', 0)
+                        .attr('dy', 20)
+                        .text('bicycle to work')
+                        .attr('x', 10);
+                    tooltipWidth =
+                        getTooltipWidth('bicycle to work', tooltipWidth);
                 } else {
                     tooltipHeight = 40;
 
@@ -286,7 +304,7 @@ function getTooltipWidth(text, currentTooltipWidth) {
  */
 function createPlot(communities) {
     // setup
-    const MULTIPLIER = 4.3;
+    const MULTIPLIER = 4.4;
     let keys = Object.keys(communities);
 
     let data = [];
