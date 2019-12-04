@@ -15,8 +15,10 @@ h3 {
     flex-wrap: nowrap;
 }
 
-#chart {
+#map {
     text-align: center;
+    height: fit-content;
+    border: 1px solid black;
 }
 
 #graphPlot {

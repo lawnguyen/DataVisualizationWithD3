@@ -1,7 +1,7 @@
 /**
  * Margin constants
  */
-const mapMargin = { top: 0, right: 10, bottom: 100, left: 10 };
+const mapMargin = { top: 10, right: 10, bottom: 100, left: 10 };
 const plotMargin = { top: 5, right: 10, bottom: 100, left: 10 };
 const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
 
@@ -41,8 +41,8 @@ let mapSVG = d3.select('#map')
 
 let plotSVG = d3.select('#graphPlot')
     .append('svg')
-    .attr('width', mapDimensions.width + plotMargin.left + plotMargin.right)
-    .attr('height', mapDimensions.height + plotMargin.top + plotMargin.bottom)
+    .attr('width', plotDimensions.width + plotMargin.left + plotMargin.right)
+    .attr('height', plotDimensions.height + plotMargin.top + plotMargin.bottom)
     .append('g')
     .attr('class', 'graphPlot')
     .attr('transform', 'translate(' + plotMargin.left + ',' + plotMargin.top + ')');
@@ -50,7 +50,9 @@ let plotSVG = d3.select('#graphPlot')
 let legendSVG = d3.select('#legend')
     .append('svg')
     .attr('width', legendDimensions.width + legendMargin.left + legendMargin.right)
-    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom);
+    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom)
+    .append('g')
+    .attr('transform', 'translate(' + legendMargin.left + ',' + legendMargin.top + ')');
 
 let legendContainer = legendSVG.append('g');
 
@@ -160,143 +162,9 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .attr('font-weight', 'bold')
             .text(d => { return d.properties.comm_code });
 
-        /* Legend */
-        const x = 0;
-
-        // Legend background
-        mapSVG.append('rect')
-            .attr('x', x + 85)
-            .attr('width', 150)
-            .attr('height', 220)
-            .attr('fill', 'white');
-
-        // legend label
-        legendContainer.append('text')
-            .attr('x', x)
-            .attr('y', 9.5)
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .text('PERCENTAGE OF');
-        legendContainer.append('text')
-            .attr('x', x)
-            .attr('y', 22)
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .text('CYCLING TO WORK');
-        legendContainer.append('text')
-            .attr('x', x)
-            .attr('y', 34.5)
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .text('(OF TOTAL THAT CYCLE');
-        legendContainer.append('text')
-            .attr('x', x)
-            .attr('y', 47)
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .text('TO WORK IN CALGARY)');
-
-        // create legend
-        let legend = legendContainer.append('g')
-            .attr('font-family', 'sans-serif')
-            .attr('font-size', 10)
-            .attr('transform', 'translate(0, 24)')  // Make space for legend title
-            .attr('text-anchor', 'end')
-            .selectAll('g')
-            .data([
-                '<0.50%',
-                '0.50-0.99%',
-                '1.00-1.99%',
-                '2.00-2.99%',
-                '3.00-3.99%',
-                '>4.00%',
-                'non-residential'
-            ])
-            .enter()
-            .append('g')
-            .attr('transform', (d, i) => {
-                return 'translate(0,' + i * 20 + ')';
-            });
-
-        // legend value colors
-        legend.append('rect')
-            .attr('x', x)
-            .attr('y', (d) => {
-                if (d === 'non-residential') {
-                    return 50;
-                }
-                return 30;
-            })
-            .attr('width', 16)
-            .attr('height', (d) => {
-                if (d === 'non-residential') {
-                    return 16;
-                }
-                return 21;
-            })
-            .attr('stroke-width', (d) => {
-                if (d === 'non-residential') {
-                    return 0.5;
-                }
-                return 0;
-            })
-            .attr('stroke', (d) => {
-                if (d === 'non-residential') {
-                    return 'black';
-                }
-                return 'white';
-            })
-            .attr('fill', (d) => {
-                switch (d) {
-                    case '<0.50%':
-                        return '#c6dbef';
-                    case '0.50-0.99%':
-                        return '#9ecae1';
-                    case '1.00-1.99%':
-                        return '#6baed6';
-                    case '2.00-2.99%':
-                        return '#4292c6';
-                    case '3.00-3.99%':
-                        return '#2171b5';
-                    case '>4.00%':
-                        return '#084594';
-                    case 'non-residential':
-                        return '#f7fbff';
-                    default:
-                        return '#c6dbef';
-                }
-            });
-
-        // legend value text
-        legend.append('text')
-            .attr('x', x + 15)
-            .attr('y', (d) => {
-                if (d === 'non-residential') {
-                    return 59;
-                }
-                return 50;
-            })
-            .attr('dy', '0.32em')
-            .attr('class', 'legend-text')
-            .attr('text-anchor', 'end')
-            .attr('xml:space', 'preserve')
-            .text((d) => {
-                if (d === 'non-residential') {
-                    return '  ' + d;
-                }
-                return ('-  ' + d);
-            });
-
-        // Data source text
-        legendContainer.append('text')
-            .attr('x', 0)
-            .attr('y', mapDimensions.height + mapMargin.bottom - 10)
-            .attr('font-size', 12)
-            .attr('font-weight', 'bold')
-            .attr('dy', '0.32em')
-            .text('Source: Calgary Civic Census 2016');
-
-
+        // Create legend
+        createLegend();
+            
         /**
          * Bar chart plots
          */
@@ -506,6 +374,131 @@ function createPlot(communities) {
             return getAssignedColor(d.comm_code, communities);
         });
     return graphPlot;
+}
+
+/**
+ * Create the legend
+ */
+function createLegend() {
+    /* Legend */
+    const x = 0;
+
+    // legend label
+    legendContainer.append('text')
+        .attr('x', x)
+        .attr('y', 9.5)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('PERCENTAGE OF');
+    legendContainer.append('text')
+        .attr('x', x)
+        .attr('y', 22)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('CYCLING TO WORK');
+    legendContainer.append('text')
+        .attr('x', x)
+        .attr('y', 34.5)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('(OF TOTAL THAT CYCLE');
+    legendContainer.append('text')
+        .attr('x', x)
+        .attr('y', 47)
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .text('TO WORK IN CALGARY)');
+
+    // create legend
+    let legend = legendContainer.append('g')
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', 10)
+        .attr('transform', 'translate(0, 24)')  // Make space for legend title
+        .attr('text-anchor', 'end')
+        .selectAll('g')
+        .data([
+            '<0.50%',
+            '0.50-0.99%',
+            '1.00-1.99%',
+            '2.00-2.99%',
+            '3.00-3.99%',
+            '>4.00%',
+            'non-residential'
+        ])
+        .enter()
+        .append('g')
+        .attr('transform', (d, i) => {
+            return 'translate(0,' + i * 20 + ')';
+        });
+
+    // legend value colors
+    legend.append('rect')
+        .attr('x', x)
+        .attr('y', (d) => {
+            if (d === 'non-residential') {
+                return 50;
+            }
+            return 30;
+        })
+        .attr('width', 16)
+        .attr('height', (d) => {
+            if (d === 'non-residential') {
+                return 16;
+            }
+            return 21;
+        })
+        .attr('stroke-width', (d) => {
+            if (d === 'non-residential') {
+                return 0.5;
+            }
+            return 0;
+        })
+        .attr('stroke', (d) => {
+            if (d === 'non-residential') {
+                return 'black';
+            }
+            return 'white';
+        })
+        .attr('fill', (d) => {
+            switch (d) {
+                case '<0.50%':
+                    return '#c6dbef';
+                case '0.50-0.99%':
+                    return '#9ecae1';
+                case '1.00-1.99%':
+                    return '#6baed6';
+                case '2.00-2.99%':
+                    return '#4292c6';
+                case '3.00-3.99%':
+                    return '#2171b5';
+                case '>4.00%':
+                    return '#084594';
+                case 'non-residential':
+                    return '#f7fbff';
+                default:
+                    return '#c6dbef';
+            }
+        });
+
+    // legend value text
+    legend.append('text')
+        .attr('x', x + 15)
+        .attr('y', (d) => {
+            if (d === 'non-residential') {
+                return 59;
+            }
+            return 50;
+        })
+        .attr('dy', '0.32em')
+        .attr('class', 'legend-text')
+        .attr('text-anchor', 'end')
+        .attr('xml:space', 'preserve')
+        .text((d) => {
+            if (d === 'non-residential') {
+                return '  ' + d;
+            }
+            return ('-  ' + d);
+        });
 }
 
 /**
