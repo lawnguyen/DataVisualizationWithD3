@@ -1,7 +1,7 @@
 /**
  * Margin constants
  */
-const mapMargin = { top: 10, right: 10, bottom: 100, left: 10 };
+const mapMargin = { top: 10, right: 10, bottom: 10, left: 10 };
 const plotMargin = { top: 5, right: 10, bottom: 100, left: 10 };
 const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
 
@@ -10,7 +10,7 @@ const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
  */
 const mapDimensions = { width: 1024, height: 768 };
 const plotDimensions = { width: 1024, height: 420 };
-const legendDimensions = { width: 150, height: 220 };
+const legendDimensions = { width: 160, height: 220 };
 
 // The columns from the dataset that we are interested in
 const cols = [
@@ -386,25 +386,25 @@ function createLegend() {
     // legend label
     legendContainer.append('text')
         .attr('x', x)
-        .attr('y', 9.5)
+        .attr('y', 10)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('PERCENTAGE OF');
     legendContainer.append('text')
         .attr('x', x)
-        .attr('y', 22)
+        .attr('y', 24)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('CYCLING TO WORK');
     legendContainer.append('text')
         .attr('x', x)
-        .attr('y', 34.5)
+        .attr('y', 38)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('(OF TOTAL THAT CYCLE');
     legendContainer.append('text')
         .attr('x', x)
-        .attr('y', 47)
+        .attr('y', 52)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
         .text('TO WORK IN CALGARY)');
@@ -413,7 +413,7 @@ function createLegend() {
     let legend = legendContainer.append('g')
         .attr('font-family', 'sans-serif')
         .attr('font-size', 10)
-        .attr('transform', 'translate(0, 24)')  // Make space for legend title
+        .attr('transform', 'translate(0, 32)')  // Make space for legend title
         .attr('text-anchor', 'end')
         .selectAll('g')
         .data([
@@ -438,7 +438,7 @@ function createLegend() {
             if (d === 'non-residential') {
                 return 50;
             }
-            return 30;
+            return 31;
         })
         .attr('width', 16)
         .attr('height', (d) => {
