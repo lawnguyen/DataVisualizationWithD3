@@ -445,7 +445,7 @@ function createPlot(communities) {
     // x-axis
     graphPlot.append("g")
         .attr("class", "x-axis")
-        .attr("transform", "translate(50," + (height / 2 - 100) + ")")
+        .attr("transform", "translate(46," + (height / 2 - 100) + ")")
         .call(xAxis)
         .selectAll("text")
         .each(function (d) {
