@@ -31,6 +31,10 @@ h1 {
     width: fit-content;
 }
 
+#dropdown {
+    margin: 5;
+}
+
 #graphPlot {
     text-align: center;
     font-size: 12px;
