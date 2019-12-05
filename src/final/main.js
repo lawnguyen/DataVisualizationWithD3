@@ -25,17 +25,38 @@ const cols = [
     'work_home'
 ];
 
+/**
+ * Scope variables
+ */
 let modeOfTravel = 'bicycle';
 let modeOfTravelTotal = 0;
 let selected = [];
 let zoom;
 let communities = {};
 
-var dropdown = document.getElementsByClassName('dropdown')[0];
-dropdown.addEventListener('click', function(event) {
+/**
+ * Event listeners
+ */
+let dropdown = document.getElementsByClassName('dropdown')[0];
+dropdown.addEventListener('click', (event) => {
     event.stopPropagation();
     dropdown.classList.toggle('is-active');
 });
+
+let dropdownItems = document.getElementsByClassName('dropdown-item');
+let activeItem = dropdownItems[0];
+for (let i of dropdownItems) {
+    i.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (i.classList.contains('is-active')) {
+            i.classList.remove('is-active');
+        } else {
+            i.classList.add('is-active');
+            activeItem.classList.remove('is-active');
+            activeItem = i;
+        }
+    });
+}
 
 /**
  * Create SVGs
@@ -64,6 +85,9 @@ let legendSVG = d3.select('#legend')
 
 let legendContainer = legendSVG.append('g');
 
+/**
+ * Load and parse data
+ */
 d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
     d3.csv('../../data/Modes_of_Travel.csv', (d, i, columns) => {
         return processCsvRow(d, i, columns);
