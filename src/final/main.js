@@ -406,7 +406,7 @@ function createPlot(communities) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Amount of people that" + modeOfTravel + " to work");
+        .text("Amount of people that " + modeOfTravel + " to work");
 
     // draw bars
     graphPlot.selectAll(".bar")
