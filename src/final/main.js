@@ -391,8 +391,8 @@ function createPlot(communities) {
         });
     graphPlot.append("text")
         .attr("class", "label")
-        .attr("x", plotDimensions.width / 2)
-        .attr("y", -6)
+        .attr("x", (plotDimensions.width + plotMargin.left + plotMargin.right) / 2)
+        .attr("y", plotDimensions.height + plotMargin.top + plotMargin.bottom - 5)
         .style("text-anchor", "end")
         .text("Communities");
 
@@ -402,7 +402,7 @@ function createPlot(communities) {
         .call(yAxis);
     graphPlot.append("text")
         .attr("class", "label")
-        .attr("transform", "translate(0,50) rotate(-90)")
+        .attr("transform", "translate(0,100) rotate(-90)")
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
