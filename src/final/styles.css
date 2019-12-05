@@ -35,6 +35,11 @@ h1 {
     margin: 5;
 }
 
+#instructions {
+    margin-left: 80;
+    margin-top: 20;
+}
+
 #graphPlot {
     text-align: center;
     font-size: 12px;
