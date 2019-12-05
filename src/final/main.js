@@ -28,11 +28,15 @@ const cols = [
 /**
  * Scope variables
  */
+let geoJsonData;
 let modeOfTravel = 'bicycle';
-let modeOfTravelTotal = 0;
+let modeOfTravelTotals = {};
 let selected = [];
 let zoom;
 let communities = {};
+let mapSVG;
+let plotSVG;
+let legendSVG;
 
 /**
  * Event listeners
@@ -44,46 +48,29 @@ dropdown.addEventListener('click', (event) => {
 });
 
 let dropdownItems = document.getElementsByClassName('dropdown-item');
+let dropdownSelected = document.getElementById('dropdown-selected');
 let activeItem = dropdownItems[0];
 for (let i of dropdownItems) {
     i.addEventListener('click', (event) => {
         event.stopPropagation();
-        if (i.classList.contains('is-active')) {
-            i.classList.remove('is-active');
-        } else {
+        if (!i.classList.contains('is-active')) {
             i.classList.add('is-active');
+            dropdownSelected.textContent = i.textContent.trim();
             activeItem.classList.remove('is-active');
             activeItem = i;
+
+            // Close the dropdown
+            dropdown.classList.remove('is-active');
+
+            // Re-draw SVG components with new mode of travel
+            document.getElementById("map-svg").remove();
+            document.getElementById("plot-svg").remove();
+            document.getElementById("legend-svg").remove();
+            modeOfTravel = getColumnName(i.textContent.trim());
+            draw();
         }
     });
 }
-
-/**
- * Create SVGs
- */
-let mapSVG = d3.select('#map')
-    .append('svg')
-    .attr('width', mapDimensions.width + mapMargin.left + mapMargin.right)
-    .attr('height', mapDimensions.height + mapMargin.top + mapMargin.bottom)
-    .append('g')
-    .attr('transform', 'translate(' + mapMargin.left + ',' + mapMargin.top + ')');
-
-let plotSVG = d3.select('#graphPlot')
-    .append('svg')
-    .attr('width', plotDimensions.width + plotMargin.left + plotMargin.right)
-    .attr('height', plotDimensions.height + plotMargin.top + plotMargin.bottom)
-    .append('g')
-    .attr('class', 'graphPlot')
-    .attr('transform', 'translate(' + plotMargin.left + ',' + plotMargin.top + ')');
-
-let legendSVG = d3.select('#legend')
-    .append('svg')
-    .attr('width', legendDimensions.width + legendMargin.left + legendMargin.right)
-    .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom)
-    .append('g')
-    .attr('transform', 'translate(' + legendMargin.left + ',' + legendMargin.top + ')');
-
-let legendContainer = legendSVG.append('g');
 
 /**
  * Load and parse data
@@ -93,6 +80,8 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         return processCsvRow(d, i, columns);
     }, (error, csvData) => {
         if (error) throw error;
+
+        geoJsonData = jsonData;
 
         const travelModes = csvData.columns.filter((c) => {
             return cols.includes(c);
@@ -105,18 +94,16 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         });
 
         // Draw the SVG components
-        draw(jsonData);
+        draw();
     });
 });
 
 /**
  * Draw all the SVG components
- * 
- * @param {Object} jsonData - data from geoJson file
  */
-function draw(jsonData) {
+function draw() {
     // Create map
-    createMap(jsonData);
+    createMap(geoJsonData);
 
     // Create legend
     createLegend();
@@ -127,14 +114,20 @@ function draw(jsonData) {
 
 /**
  * Creates the map
- * 
- * @param {Object} jsonData - data from geoJson file
  */
-function createMap(jsonData) {
+function createMap() {
+    mapSVG = d3.select('#map')
+        .append('svg')
+        .attr('id', 'map-svg')
+        .attr('width', mapDimensions.width + mapMargin.left + mapMargin.right)
+        .attr('height', mapDimensions.height + mapMargin.top + mapMargin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + mapMargin.left + ',' + mapMargin.top + ')');
+
     // Add a <g> element for each of the communities in the data
     let group = mapSVG
     .selectAll('g')
-    .data(jsonData.features)
+    .data(geoJsonData.features)
     .enter()
     .append('g')
     .attr('class', 'community')
@@ -147,7 +140,7 @@ function createMap(jsonData) {
         .fitExtent([
             [70, 10], 
             [mapDimensions.width-120, mapDimensions.height-10]
-        ], jsonData);
+        ], geoJsonData);
     const path = d3.geoPath().projection(projection);
 
     // Append path to all the <g> elements
@@ -237,6 +230,15 @@ function createMap(jsonData) {
  * Creates the bar chart plot
  */
 function createPlot() {
+    plotSVG = d3.select('#graphPlot')
+        .append('svg')
+        .attr('id', 'plot-svg')
+        .attr('width', plotDimensions.width + plotMargin.left + plotMargin.right)
+        .attr('height', plotDimensions.height + plotMargin.top + plotMargin.bottom)
+        .append('g')
+        .attr('class', 'graphPlot')
+        .attr('transform', 'translate(' + plotMargin.left + ',' + plotMargin.top + ')');
+
     // setup
     const MULTIPLIER = 4.75;
     let keys = Object.keys(communities).filter(k => { 
@@ -309,7 +311,9 @@ function createPlot() {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Amount of people that " + modeOfTravel + " to work");
+        .text("Amount of people that " + 
+            getHumanReadableMessage(modeOfTravel) + 
+            (modeOfTravel === 'nowork' ? '' : ' to work'));
 
     // draw bars
     graphPlot.selectAll(".bar")
@@ -368,7 +372,15 @@ function createPlot() {
  * Creates the legend
  */
 function createLegend() {
-    /* Legend */
+    legendSVG = d3.select('#legend')
+        .append('svg')
+        .attr('id', 'legend-svg')
+        .attr('width', legendDimensions.width + legendMargin.left + legendMargin.right)
+        .attr('height', legendDimensions.height + legendMargin.top + legendMargin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + legendMargin.left + ',' + legendMargin.top + ')');
+
+    let legendContainer = legendSVG.append('g');
     const x = 0;
 
     // legend label
@@ -527,10 +539,12 @@ function onMouseMove(tooltip, commCode, scope, d = null) {
             .append('svg:tspan')
             .attr('x', 0)
             .attr('dy', 20)
-            .text(modeOfTravel + ' to work')
+            .text(getHumanReadableMessage(modeOfTravel) + 
+                (modeOfTravel === 'nowork' ? '' : ' to work'))
             .attr('x', 10);
         tooltipWidth =
-            getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
+            getTooltipWidth(getHumanReadableMessage(modeOfTravel) + 
+                (modeOfTravel === 'nowork' ? '' : ' to work'), tooltipWidth);
     } else {
         tooltipHeight = 40;
 
@@ -625,7 +639,7 @@ function getAssignedColor(commCode) {
     }
 
     let percentCycling =
-        communities[commCode][modeOfTravel] / modeOfTravelTotal * 100;
+        communities[commCode][modeOfTravel] / modeOfTravelTotals[modeOfTravel] * 100;
 
     if (percentCycling < 0.5) {
         return '#c6dbef';
@@ -668,9 +682,14 @@ function processCsvRow(d, i, columns) {
     for (i = 0; i < columns.length; i++) {
         if (cols.includes(columns[i])) {
             s += d[columns[i]];
+
+            // Sum up the total for each mode of travel
+            if (!modeOfTravelTotals[columns[i]]) {
+                modeOfTravelTotals[columns[i]] = 0;
+            }
+            modeOfTravelTotals[columns[i]] += d[columns[i]];
         }
     };
-    modeOfTravelTotal += d[modeOfTravel];
     d.sum = s;
     return d;
 }
@@ -707,4 +726,47 @@ function deselect(commCode) {
         .attr('fill', getAssignedColor(commCode));
     d3.select('#BARID' + commCode)
         .attr('fill', getAssignedColor(commCode));
+}
+
+/**
+ * Get the columnn name from the human-readable mode of travel name
+ * 
+ * @param {string} mode - The mode of travel
+ */
+function getColumnName(mode) {
+    switch (mode) {
+        case 'Bicycle':
+            return 'bicycle';
+        case 'Drive alone':
+            return 'drovealone';
+        case 'Transit':
+            return 'transit';
+        case 'Walk':
+            return 'walk';
+        case 'Work from home':
+            return 'work_home';
+        case 'Unemployed':
+            return 'nowork';
+    }
+}
+
+/**
+ * 
+ * @param {string} column - The column to retrieve the human-readable message for
+ */
+function getHumanReadableMessage(column) {
+    switch (column) {
+        case 'bicycle':
+            return 'bicycle';
+        case 'drovealone':
+            return 'drive alone';
+        case 'transit':
+            return 'transit';
+        case 'walk':
+            return 'walk';
+        case 'work_home':
+            return 'stay at home';
+        case 'nowork':
+            return 'are unemployed';
+    }
 }
