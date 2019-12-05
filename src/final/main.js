@@ -151,54 +151,7 @@ function createMap(jsonData) {
             }
         })
         .on('mousemove', function (d) {
-            let dataIsAvailable = !!communities[d.properties.comm_code];
-            let tooltipHeight = 20;
-            let tooltipWidth = 0;
-            let xPosition = d3.mouse(this)[0] + 10;
-            let yPosition = d3.mouse(this)[1] + 20;
-            tooltip.attr(
-                'transform', 'translate(' + xPosition + ',' + yPosition + ')');
-            tooltip.select('text').text(d.properties.name);
-            tooltipWidth = getTooltipWidth(d.properties.name, tooltipWidth);
-
-            if (dataIsAvailable) {
-                tooltipHeight = 60;
-
-                tooltip.select('text')
-                    .append('svg:tspan')
-                    .attr('x', 0)
-                    .attr('dy', 20)
-                    .text(communities[d.properties.comm_code][modeOfTravel] +
-                        ' people who live here')
-                    .attr('x', 10);
-                tooltipWidth =
-                    getTooltipWidth(communities[d.properties.comm_code][modeOfTravel] +
-                        ' people who live here', tooltipWidth);
-
-                tooltip.select('text')
-                    .append('svg:tspan')
-                    .attr('x', 0)
-                    .attr('dy', 20)
-                    .text(modeOfTravel + ' to work')
-                    .attr('x', 10);
-                tooltipWidth =
-                    getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
-            } else {
-                tooltipHeight = 40;
-
-                tooltip.select('text')
-                    .append('svg:tspan')
-                    .attr('x', 0)
-                    .attr('dy', 20)
-                    .text('non-residential community')
-                    .attr('x', 10);
-                tooltipWidth =
-                    getTooltipWidth('non-residential community', tooltipWidth);
-            }
-
-            tooltip.select('rect')
-                .attr('width', tooltipWidth)
-                .attr('height', tooltipHeight);
+            onMouseMove(tooltip, d.properties.comm_code, this, d);
         })
         .on('click', (d) => {
             if (!selected.includes(d.properties.comm_code)) {
@@ -219,7 +172,35 @@ function createMap(jsonData) {
         .attr('text-anchor', 'middle')
         .attr('class', 'text-label')
         .attr('font-weight', 'bold')
-        .text(d => { return d.properties.comm_code });
+        .text(d => { return d.properties.comm_code })
+        .on('mouseover', function(d) { 
+            tooltip.style('display', null);
+
+            // Highlight bar and map
+            select(d.properties.comm_code);
+        })
+        .on('mouseout', function(d) { 
+            tooltip.style('display', 'none');
+
+            if (!selected.includes(d.properties.comm_code)) {
+                // De-highlight bar and map
+                deselect(d.properties.comm_code);
+            }
+        })
+        .on('mousemove', function (d) {
+            onMouseMove(tooltip, d.properties.comm_code, this, d);
+        })
+        .on('click', (d) => {
+            if (!selected.includes(d.properties.comm_code)) {
+                // Highlight on map and bar
+                select(d.properties.comm_code);
+                selected.push(d.properties.comm_code);
+            } else {
+                // De-highlight on map and bar
+                deselect(d.properties.comm_code);
+                selected.splice(selected.indexOf(d.properties.comm_code), 1);
+            }
+        });
 }
 
 /**
@@ -338,55 +319,7 @@ function createPlot() {
                 }
             })
             .on('mousemove', function (d) {
-                let dataIsAvailable = !!communities[d.comm_code];
-                let tooltipHeight = 20;
-                let tooltipWidth = 0;
-                let xPosition = d3.mouse(this)[0] + 10;
-                let yPosition = d3.mouse(this)[1] + 20;
-                tooltip2.attr(
-                    'transform', 'translate(' + xPosition + ',' + yPosition + ')');
-                tooltip2.select('text').text(communities[d.comm_code].name);
-                tooltipWidth =
-                    getTooltipWidth(communities[d.comm_code].name, tooltipWidth);
-
-                if (dataIsAvailable) {
-                    tooltipHeight = 60;
-
-                    tooltip2.select('text')
-                        .append('svg:tspan')
-                        .attr('x', 0)
-                        .attr('dy', 20)
-                        .text(communities[d.comm_code][modeOfTravel] +
-                            ' people who live here')
-                        .attr('x', 10);
-                    tooltipWidth =
-                        getTooltipWidth(communities[d.comm_code][modeOfTravel] +
-                            ' people who live here', tooltipWidth);
-
-                    tooltip2.select('text')
-                        .append('svg:tspan')
-                        .attr('x', 0)
-                        .attr('dy', 20)
-                        .text(modeOfTravel + ' to work')
-                        .attr('x', 10);
-                    tooltipWidth =
-                        getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
-                } else {
-                    tooltipHeight = 40;
-
-                    tooltip2.select('text')
-                        .append('svg:tspan')
-                        .attr('x', 0)
-                        .attr('dy', 20)
-                        .text('non-residential community')
-                        .attr('x', 10);
-                    tooltipWidth =
-                        getTooltipWidth('non-residential community', tooltipWidth);
-                }
-
-                tooltip2.select('rect')
-                    .attr('width', tooltipWidth)
-                    .attr('height', tooltipHeight);
+                onMouseMove(tooltip2, d.comm_code, this);
             })
             .on('click', (d) => {
                 if (!selected.includes(d.comm_code)) {
@@ -524,6 +457,66 @@ function createLegend() {
             }
             return ('-  ' + d);
         });
+}
+
+/**
+ * Handle mouse move events on the map and bars
+ * 
+ * @param {Object} tooltip - The tooltip object to show
+ * @param {string} commCode - The community code
+ * @param {Object} scope - The "this" object of the calling code
+ * @param {Object} d - Optional. Only when we need it to retrieve the name
+ */
+function onMouseMove(tooltip, commCode, scope, d = null) {
+    let dataIsAvailable = !!communities[commCode];
+    let tooltipHeight = 20;
+    let tooltipWidth = 0;
+    let xPosition = d3.mouse(scope)[0] + 10;
+    let yPosition = d3.mouse(scope)[1] + 20;
+    let commName = d === null ? communities[commCode].name : d.properties.name;
+    tooltip.attr(
+        'transform', 'translate(' + xPosition + ',' + yPosition + ')');
+    tooltip.select('text').text(commName);
+    tooltipWidth = getTooltipWidth(commName, tooltipWidth);
+
+    if (dataIsAvailable) {
+        tooltipHeight = 60;
+
+        tooltip.select('text')
+            .append('svg:tspan')
+            .attr('x', 0)
+            .attr('dy', 20)
+            .text(communities[commCode][modeOfTravel] +
+                ' people who live here')
+            .attr('x', 10);
+        tooltipWidth =
+            getTooltipWidth(communities[commCode][modeOfTravel] +
+                ' people who live here', tooltipWidth);
+
+        tooltip.select('text')
+            .append('svg:tspan')
+            .attr('x', 0)
+            .attr('dy', 20)
+            .text(modeOfTravel + ' to work')
+            .attr('x', 10);
+        tooltipWidth =
+            getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
+    } else {
+        tooltipHeight = 40;
+
+        tooltip.select('text')
+            .append('svg:tspan')
+            .attr('x', 0)
+            .attr('dy', 20)
+            .text('non-residential community')
+            .attr('x', 10);
+        tooltipWidth =
+            getTooltipWidth('non-residential community', tooltipWidth);
+    }
+
+    tooltip.select('rect')
+        .attr('width', tooltipWidth)
+        .attr('height', tooltipHeight);
 }
 
 /**
