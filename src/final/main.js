@@ -10,7 +10,7 @@ const legendMargin = { top: 0, right: 10, bottom: 50, left: 10 };
  */
 const mapDimensions = { width: 640, height: 768 };
 const plotDimensions = { width: 1120, height: 420 };
-const legendDimensions = { width: 160, height: 220 };
+const legendDimensions = { width: 180, height: 220 };
 
 // The columns from the dataset that we are interested in
 const cols = [
@@ -444,7 +444,7 @@ function createLegend() {
         .attr('y', 10)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
-        .text('PERCENTAGE OF');
+        .text('PERCENTAGE OF PEOPLE');
     legendContainer.append('text')
         .attr('x', x)
         .attr('y', 24)
