@@ -312,7 +312,7 @@ function createPlot() {
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Amount of people that " + 
-            getHumanReadableMessage(modeOfTravel) + 
+            getHumanReadableMessage() + 
             (modeOfTravel === 'nowork' ? '' : ' to work'));
 
     // draw bars
@@ -395,19 +395,19 @@ function createLegend() {
         .attr('y', 24)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
-        .text('CYCLING TO WORK');
+        .text(getLegendTitle1());
     legendContainer.append('text')
         .attr('x', x)
         .attr('y', 38)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
-        .text('(OF TOTAL THAT CYCLE');
+        .text(getLegendTitle2());
     legendContainer.append('text')
         .attr('x', x)
         .attr('y', 52)
         .attr('dy', '0.32em')
         .attr('class', 'legend-text')
-        .text('TO WORK IN CALGARY)');
+        .text(getLegendTitle3());
 
     // create legend
     let legend = legendContainer.append('g')
@@ -539,11 +539,11 @@ function onMouseMove(tooltip, commCode, scope, d = null) {
             .append('svg:tspan')
             .attr('x', 0)
             .attr('dy', 20)
-            .text(getHumanReadableMessage(modeOfTravel) + 
+            .text(getHumanReadableMessage() + 
                 (modeOfTravel === 'nowork' ? '' : ' to work'))
             .attr('x', 10);
         tooltipWidth =
-            getTooltipWidth(getHumanReadableMessage(modeOfTravel) + 
+            getTooltipWidth(getHumanReadableMessage() + 
                 (modeOfTravel === 'nowork' ? '' : ' to work'), tooltipWidth);
     } else {
         tooltipHeight = 40;
@@ -729,6 +729,66 @@ function deselect(commCode) {
 }
 
 /**
+ * Legend title line 1
+ */
+function getLegendTitle1() {
+    switch (modeOfTravel) {
+        case 'bicycle':
+            return 'CYCLING TO WORK';
+        case 'drovealone':
+            return 'DRIVING ALONE TO WORK';
+        case 'transit':
+            return 'TAKING TRANSIT TO WORK';
+        case 'walk':
+            return 'WALKING TO WORK';
+        case 'work_home':
+            return 'WORKING FROM HOME';
+        case 'nowork':
+            return 'THAT ARE UNEMPLOYED';
+    }
+}
+
+/**
+ * Legend title line 2
+ */
+function getLegendTitle2() {
+    switch (modeOfTravel) {
+        case 'bicycle':
+            return '(OF TOTAL THAT CYCLE';
+        case 'drovealone':
+            return '(OF TOTAL THAT DRIVE ALONE';
+        case 'transit':
+            return '(OF TOTAL THAT TRANSIT';
+        case 'walk':
+            return '(OF TOTAL THAT WALK';
+        case 'work_home':
+            return '(OF TOTAL THAT WORK FROM';
+        case 'nowork':
+            return '(OF TOTAL UNEMPLOYED';
+    }
+}
+
+/**
+ * Legend title line 3
+ */
+function getLegendTitle3() {
+    switch (modeOfTravel) {
+        case 'bicycle':
+            return 'TO WORK IN CALGARY)';
+        case 'drovealone':
+            return 'TO WORK IN CALGARY)';
+        case 'transit':
+            return 'TO WORK IN CALGARY)';
+        case 'walk':
+            return 'TO WORK IN CALGARY)';
+        case 'work_home':
+            return 'HOME IN CALGARY)';
+        case 'nowork':
+            return 'IN CALGARY)';
+    }
+}
+
+/**
  * Get the columnn name from the human-readable mode of travel name
  * 
  * @param {string} mode - The mode of travel
@@ -751,11 +811,10 @@ function getColumnName(mode) {
 }
 
 /**
- * 
- * @param {string} column - The column to retrieve the human-readable message for
+ * Retrieve the human-readable message that we will use in the tooltip and axes
  */
-function getHumanReadableMessage(column) {
-    switch (column) {
+function getHumanReadableMessage() {
+    switch (modeOfTravel) {
         case 'bicycle':
             return 'bicycle';
         case 'drovealone':
