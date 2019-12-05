@@ -61,10 +61,6 @@ h1 {
     stroke-width: 0.5;
 }
 
-.community:hover, .bar:hover {
-    fill: #F03A5F;
-}
-
 .legend-text {
     fill: #363636;
     font-weight: bold;

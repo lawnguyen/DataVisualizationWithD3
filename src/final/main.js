@@ -12,7 +12,9 @@ const mapDimensions = { width: 640, height: 768 };
 const plotDimensions = { width: 1120, height: 420 };
 const legendDimensions = { width: 180, height: 220 };
 
-// The columns from the dataset that we are interested in
+/**
+ * Data column constants
+ */
 const cols = [
     'bicycle',
     'carpool_dr',
@@ -24,6 +26,69 @@ const cols = [
     'walk',
     'work_home'
 ];
+
+/**
+ * Color constants
+ */
+const highlightColors = {
+    'bicycle': '#f58231',
+    'drovealone': '#e6194B',
+    'nowork': '#ffe119',
+    'transit': '#000075',
+    'walk': '#bfef45',
+    'work_home': '#3cb44b'
+};
+
+const colors = {
+    'bicycle': [
+        '#c6dbef', 
+        '#9ecae1', 
+        '#6baed6', 
+        '#4292c6', 
+        '#2171b5', 
+        '#084594'
+    ],
+    'drovealone': [
+        '#99d8c9',
+        '#66c2a4',
+        '#41ae76',
+        '#238b45',
+        '#006d2c',
+        '#00441b'
+    ],
+    'nowork': [
+        '#bcbddc',
+        '#9e9ac8',
+        '#807dba',
+        '#6a51a3',
+        '#54278f',
+        '#3f007d'
+    ],
+    'transit': [
+        '#fdae6b',
+        '#fd8d3c',
+        '#f16913',
+        '#d94801',
+        '#a63603',
+        '#7f2704',
+    ],
+    'walk': [
+        '#fa9fb5',
+        '#f768a1',
+        '#dd3497',
+        '#ae017e',
+        '#7a0177',
+        '#49006a'
+    ],
+    'work_home': [
+        '#fc9272',
+        '#fb6a4a',
+        '#ef3b2c',
+        '#cb181d',
+        '#a50f15',
+        '#67000d',
+    ]
+};
 
 /**
  * Scope variables
@@ -462,21 +527,21 @@ function createLegend() {
         .attr('fill', (d) => {
             switch (d) {
                 case '<0.50%':
-                    return '#c6dbef';
+                    return colors[modeOfTravel][0];
                 case '0.50-0.99%':
-                    return '#9ecae1';
+                    return colors[modeOfTravel][1];
                 case '1.00-1.99%':
-                    return '#6baed6';
+                    return colors[modeOfTravel][2];
                 case '2.00-2.99%':
-                    return '#4292c6';
+                    return colors[modeOfTravel][3];
                 case '3.00-3.99%':
-                    return '#2171b5';
+                    return colors[modeOfTravel][4];
                 case '>4.00%':
-                    return '#084594';
+                    return colors[modeOfTravel][5];
                 case 'non-residential':
                     return '#f7fbff';
                 default:
-                    return '#c6dbef';
+                    return colors[modeOfTravel][0];
             }
         });
 
@@ -642,19 +707,19 @@ function getAssignedColor(commCode) {
         communities[commCode][modeOfTravel] / modeOfTravelTotals[modeOfTravel] * 100;
 
     if (percentCycling < 0.5) {
-        return '#c6dbef';
+        return colors[modeOfTravel][0];
     } else if (0.5 <= percentCycling && percentCycling < 1.0) {
-        return '#9ecae1';
+        return colors[modeOfTravel][1];
     } else if (1.0 <= percentCycling && percentCycling < 2.0) {
-        return '#6baed6';
+        return colors[modeOfTravel][2];
     } else if (2.0 <= percentCycling && percentCycling < 3.0) {
-        return '#4292c6';
+        return colors[modeOfTravel][3];
     } else if (3.0 <= percentCycling && percentCycling < 4.0) {
-        return '#2171b5';
+        return colors[modeOfTravel][4];
     } else if (4.0 <= percentCycling) {
-        return '#084594';
+        return colors[modeOfTravel][5];
     }
-    return '#c6dbef';
+    return colors[modeOfTravel][0];
 }
 
 /**
@@ -711,8 +776,8 @@ function reset() {
  * @param {string} commCode The community code
  */
 function select(commCode) {
-    d3.select('#MAPID' + commCode).attr('fill', '#F03A5F');
-    d3.select('#BARID' + commCode).attr('fill', '#F03A5F');
+    d3.select('#MAPID' + commCode).attr('fill', highlightColors[modeOfTravel]);
+    d3.select('#BARID' + commCode).attr('fill', highlightColors[modeOfTravel]);
 }
 
 /**
