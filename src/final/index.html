@@ -1,20 +1,28 @@
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calgary - Modes of Travel to Work</title>
   <script src='https://d3js.org/d3.v4.min.js'></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>How Calgarians Travel to Work (2016) - By Community</h1>
-    <button type="button" onclick="reset()">Reset All</button>
-    <div class="flex-container">
-      <div id="map"></div>
-      <div>
-        <div id="legend"></div>
-        <div id="graphPlot"></div>
-      </div>
+    <h1 class="title is-2">How Calgarians Travel to Work (2016) - By Community</h1>
+    <div class="container">
+      <button class="button is-danger reset-button" onclick="reset()">Reset All</button>
+      <div class="flex-container">
+          <div id="map"></div>
+          <div>
+            <div class="flex-container">
+                <div id="legend"></div>
+                <div></div>
+            </div>
+            <div id="graphPlot"></div>
+          </div>
+        </div>
+        <div class="source-label"><p>Source: Calgary Civic Census 2016</p></div>
     </div>
-    <div class="source-label"><p>Source: Calgary Civic Census 2016</p></div>
   <script src='main.js'></script>
 </body>
 </html>

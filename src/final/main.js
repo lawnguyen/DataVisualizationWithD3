@@ -260,7 +260,7 @@ function createPlot() {
                 .attr("y1", 0)
                 .attr("y2", 10 + 18 * ydiff)
                 .attr("stroke-width", 0.4)
-                .attr("stroke", "black");
+                .attr("stroke", "#363636");
         });
     graphPlot.append("text")
         .attr("class", "label")
@@ -532,7 +532,9 @@ function createTooltip(chart) {
         .style('display', 'none');
 
     tooltip.append('rect')
-        .attr('fill', 'black')
+        .attr('rx', '5')
+        .attr('ry', '5')
+        .attr('fill', '#363636')
         .style('opacity', 0.75);
 
     tooltip.append('text')
@@ -660,8 +662,8 @@ function reset() {
  * @param {string} commCode The community code
  */
 function select(commCode) {
-    d3.select('#MAPID' + commCode).attr('fill', 'red');
-    d3.select('#BARID' + commCode).attr('fill', 'red');
+    d3.select('#MAPID' + commCode).attr('fill', '#F03A5F');
+    d3.select('#BARID' + commCode).attr('fill', '#F03A5F');
 }
 
 /**

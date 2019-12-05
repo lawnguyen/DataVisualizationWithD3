@@ -2,17 +2,22 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-h1, h3 {
+h1 {
     text-align: center;
-}
-
-h3 {
-    opacity: 0.5;
 }
 
 .flex-container {
     display: flex;
     flex-wrap: nowrap;
+}
+
+.container {
+    margin-left: 10;
+    margin-right: 10;
+}
+
+.reset-button {
+    margin: 5;
 }
 
 #map {
@@ -31,29 +36,35 @@ h3 {
 }
 
 .text-label {
-    fill: black;
-    stroke: black;
+    fill: #363636;
+    stroke: #363636;
     stroke-width: 0;
     font-size: 7;
     font-weight: bold;
 }
 
+.label {
+    fill: #363636;
+}
+
 .community {
-    stroke: black;
+    stroke: #363636;
     stroke-width: 0.5;
 }
 
 .community:hover, .bar:hover {
-    fill: red;
+    fill: #F03A5F;
 }
 
 .legend-text {
+    fill: #363636;
     font-weight: bold;
     text-anchor: start;
     font-size: 12;
 }
 
 .legend-value-text {
+    fill: #363636;
     font-weight: normal;
     text-anchor: start;
     font-size: 14;
