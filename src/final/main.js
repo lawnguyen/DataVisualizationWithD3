@@ -31,6 +31,12 @@ let selected = [];
 let zoom;
 let communities = {};
 
+var dropdown = document.getElementsByClassName('dropdown')[0];
+dropdown.addEventListener('click', function(event) {
+    event.stopPropagation();
+    dropdown.classList.toggle('is-active');
+});
+
 /**
  * Create SVGs
  */

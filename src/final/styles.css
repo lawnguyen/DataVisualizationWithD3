@@ -44,6 +44,10 @@ h1 {
     font-weight: bold;
 }
 
+.dropdown-item {
+    font-size: 12;
+}
+
 .label {
     fill: #363636;
 }
@@ -74,5 +78,6 @@ h1 {
 .source-label {
     font-weight: bold;
     font-size: 14;
+    margin-top: 5;
 }
   

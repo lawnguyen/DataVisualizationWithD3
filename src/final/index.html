@@ -5,18 +5,50 @@
   <title>Calgary - Modes of Travel to Work</title>
   <script src='https://d3js.org/d3.v4.min.js'></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1 class="title is-2">How Calgarians Travel to Work (2016) - By Community</h1>
     <div class="container">
-      <button class="button is-danger reset-button" onclick="reset()">Reset All</button>
+      <button class="button is-small is-danger reset-button" onclick="reset()">Reset All</button>
       <div class="flex-container">
           <div id="map"></div>
           <div>
             <div class="flex-container">
                 <div id="legend"></div>
-                <div></div>
+                <div id="dropdown">
+                  <div class="dropdown">
+                      <div class="dropdown-trigger">
+                        <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                          <span>Dropdown button</span>
+                          <span class="icon is-small">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                      </div>
+                      <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                          <a href="#" class="dropdown-item">
+                            Dropdown item
+                          </a>
+                          <a class="dropdown-item">
+                            Other dropdown item
+                          </a>
+                          <a href="#" class="dropdown-item is-active">
+                            Active dropdown item
+                          </a>
+                          <a href="#" class="dropdown-item">
+                            Other dropdown item
+                          </a>
+                          <hr class="dropdown-divider">
+                          <a href="#" class="dropdown-item">
+                            With a divider
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                </div>
             </div>
             <div id="graphPlot"></div>
           </div>
