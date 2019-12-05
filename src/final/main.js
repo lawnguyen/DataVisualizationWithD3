@@ -25,10 +25,11 @@ const cols = [
     'work_home'
 ];
 
-let selected = null;
 let modeOfTravel = 'bicycle';
 let modeOfTravelTotal = 0;
+let selected = [];
 let zoom;
+let communities = {};
 
 /**
  * Create SVGs
@@ -69,7 +70,6 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         travelModes.push('unavailable');
 
         // Create a dictionary mapping comm_code to csvData for faster lookup
-        let communities = {};
         csvData.forEach(community => {
             communities[community.comm_code] = community;
         });
@@ -85,7 +85,7 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
             .append('g')
             .attr('class', 'community')
             .attr('fill', (d) => {
-                return getAssignedColor(d.properties.comm_code, communities);
+                return getAssignedColor(d.properties.comm_code);
             });
 
         // Set the d3 geo projection and path
@@ -115,18 +115,16 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         areas.on('mouseover', function(d) { 
                 tooltip.style('display', null);
 
-                // Highlight bar
-                d3.select('#BARID' + d.properties.comm_code).attr('fill', 'red');
-                d3.select('#MAPID' + d.properties.comm_code).attr('fill', 'red');
+                // Highlight bar and map
+                select(d.properties.comm_code);
             })
             .on('mouseout', function(d) { 
                 tooltip.style('display', 'none');
 
-                // De-highlight bar
-                d3.select('#BARID' + d.properties.comm_code)
-                    .attr('fill', getAssignedColor(d.properties.comm_code, communities));
-                d3.select('#MAPID' + d.properties.comm_code)
-                    .attr('fill', getAssignedColor(d.properties.comm_code, communities));
+                if (!selected.includes(d.properties.comm_code)) {
+                    // De-highlight bar and map
+                    deselect(d.properties.comm_code);
+                }
             })
             .on('mousemove', function (d) {
                 let dataIsAvailable = !!communities[d.properties.comm_code];
@@ -177,6 +175,17 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 tooltip.select('rect')
                     .attr('width', tooltipWidth)
                     .attr('height', tooltipHeight);
+            })
+            .on('click', (d) => {
+                if (!selected.includes(d.properties.comm_code)) {
+                    // Highlight on map and bar
+                    select(d.properties.comm_code);
+                    selected.push(d.properties.comm_code);
+                } else {
+                    // De-highlight on map and bar
+                    deselect(d.properties.comm_code);
+                    selected.splice(selected.indexOf(d.properties.comm_code), 1);
+                }
             });
 
         // Label for each community
@@ -194,24 +203,22 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
         /**
          * Bar chart plots
          */
-        let graphPlot = createPlot(communities);
+        let graphPlot = createPlot();
         let tooltip2 = createTooltip('plots');
         graphPlot.selectAll('.bar')
             .on('mouseover', function(d) { 
                 tooltip2.style('display', null);
 
-                // Highlight on map
-                d3.select('#MAPID' + d.comm_code).attr('fill', 'red');
-                d3.select('#BARID' + d.comm_code).attr('fill', 'red');
+                // Highlight on map and bar
+                select(d.comm_code);
             })
             .on('mouseout', function(d) { 
                 tooltip2.style('display', 'none');
 
-                // De-highlight on map
-                d3.select('#MAPID' + d.comm_code)
-                    .attr('fill', getAssignedColor(d.comm_code, communities));
-                d3.select('#BARID' + d.comm_code)
-                    .attr('fill', getAssignedColor(d.comm_code, communities));
+                if (!selected.includes(d.comm_code)) {
+                    // De-highlight on map and bar
+                    deselect(d.comm_code);
+                }
             })
             .on('mousemove', function (d) {
                 let dataIsAvailable = !!communities[d.comm_code];
@@ -263,6 +270,17 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                 tooltip2.select('rect')
                     .attr('width', tooltipWidth)
                     .attr('height', tooltipHeight);
+            })
+            .on('click', (d) => {
+                if (!selected.includes(d.comm_code)) {
+                    // Highlight on map and bar
+                    select(d.comm_code);
+                    selected.push(d.comm_code);
+                } else {
+                    // De-highlight on map and bar
+                    deselect(d.comm_code);
+                    selected.splice(selected.indexOf(d.comm_code), 1);
+                }
             });
     });
 });
@@ -330,10 +348,8 @@ function getTooltipWidth(text, currentTooltipWidth) {
 
 /**
  * Creates the bar chart plot
- * 
- * @param {Object} communities - Object containing all community data
  */
-function createPlot(communities) {
+function createPlot() {
     // setup
     const MULTIPLIER = 4.75;
     let keys = Object.keys(communities).filter(k => { 
@@ -426,7 +442,7 @@ function createPlot(communities) {
             return (plotDimensions.height) - yScale(yValue(d)); 
         })
         .attr('fill', (d) => {
-            return getAssignedColor(d.comm_code, communities);
+            return getAssignedColor(d.comm_code);
         });
     return graphPlot;
 }
@@ -561,9 +577,8 @@ function createLegend() {
  * those who cycle to work
  * 
  * @param {string} commCode - A community code to get the color for
- * @param {Object} communities - Object containing community data
  */
-function getAssignedColor(commCode, communities) {
+function getAssignedColor(commCode) {
     if (!(!!communities[commCode])) {
         // 'Disabled' color for communities we don't have data for
         return '#f7fbff';
@@ -621,8 +636,35 @@ function processCsvRow(d, i, columns) {
 }
 
 /**
- * Reset the zoom/pan
+ * Reset the zoom/pan and selected
  */
-function resetZoom() {
+function reset() {
     mapSVG.call(zoom.transform, d3.zoomIdentity.scale(1));
+    selected.forEach(s => { 
+        deselect(s);
+    });
+    selected = [];
+}
+
+/**
+ * Hightlight the community on the bar and map
+ * 
+ * @param {string} commCode The community code
+ */
+function select(commCode) {
+    d3.select('#MAPID' + commCode).attr('fill', 'red');
+    d3.select('#BARID' + commCode).attr('fill', 'red');
+}
+
+/**
+ * De-highlight the community on the map and bar
+ * 
+ * @param {string} commCode - The community code
+ */
+function deselect(commCode) {
+    // De-highlight on map
+    d3.select('#MAPID' + commCode)
+        .attr('fill', getAssignedColor(commCode));
+    d3.select('#BARID' + commCode)
+        .attr('fill', getAssignedColor(commCode));
 }
