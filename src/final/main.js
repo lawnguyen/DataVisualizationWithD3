@@ -26,7 +26,8 @@ const cols = [
 ];
 
 let selected = null;
-let bicyclistTotal = 0;
+let modeOfTravel = 'bicycle';
+let modeOfTravelTotal = 0;
 let zoom;
 
 /**
@@ -145,21 +146,21 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
-                        .text(communities[d.properties.comm_code].bicycle +
+                        .text(communities[d.properties.comm_code][modeOfTravel] +
                             ' people who live here')
                         .attr('x', 10);
                     tooltipWidth =
-                        getTooltipWidth(communities[d.properties.comm_code].bicycle +
+                        getTooltipWidth(communities[d.properties.comm_code][modeOfTravel] +
                             ' people who live here', tooltipWidth);
 
                     tooltip.select('text')
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
-                        .text('bicycle to work')
+                        .text(modeOfTravel + ' to work')
                         .attr('x', 10);
                     tooltipWidth =
-                        getTooltipWidth('bicycle to work', tooltipWidth);
+                        getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
                 } else {
                     tooltipHeight = 40;
 
@@ -231,21 +232,21 @@ d3.json('../../data/geoJson/Community_Boundaries.geojson', (jsonData) => {
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
-                        .text(communities[d.comm_code].bicycle +
+                        .text(communities[d.comm_code][modeOfTravel] +
                             ' people who live here')
                         .attr('x', 10);
                     tooltipWidth =
-                        getTooltipWidth(communities[d.comm_code].bicycle +
+                        getTooltipWidth(communities[d.comm_code][modeOfTravel] +
                             ' people who live here', tooltipWidth);
 
                     tooltip2.select('text')
                         .append('svg:tspan')
                         .attr('x', 0)
                         .attr('dy', 20)
-                        .text('bicycle to work')
+                        .text(modeOfTravel + ' to work')
                         .attr('x', 10);
                     tooltipWidth =
-                        getTooltipWidth('bicycle to work', tooltipWidth);
+                        getTooltipWidth(modeOfTravel + ' to work', tooltipWidth);
                 } else {
                     tooltipHeight = 40;
 
@@ -337,18 +338,18 @@ function createPlot(communities) {
     const MULTIPLIER = 4.75;
     let keys = Object.keys(communities).filter(k => { 
         // Filter out communities with 0 values for that mode of travel
-        return communities[k].bicycle > 0 
+        return communities[k][modeOfTravel] > 0 
     });
 
     let data = [];
     let minY = 0, maxY = 0;
     keys.forEach((k) => {
         data.push({
-            "comm_code": k,
-            "bicycle": communities[k].bicycle,
-            "index": keys.indexOf(k)
+            ['comm_code']: k,
+            [modeOfTravel]: communities[k][modeOfTravel],
+            ['index']: keys.indexOf(k)
         });
-        temp = communities[k].bicycle;
+        temp = communities[k][modeOfTravel];
         if (minY >= temp) minY = temp;
         if (maxY <= temp) maxY = temp;
     });
@@ -357,7 +358,7 @@ function createPlot(communities) {
     let xScale = d3.scaleBand().range([0, (keys.length - 1) * MULTIPLIER]), // value -> display
         xAxis = d3.axisBottom().scale(xScale).tickSize(0);
     // setup y
-    let yValue = (d) => { return d.bicycle }, // data -> value
+    let yValue = (d) => { return d[modeOfTravel] }, // data -> value
         yScale = 
             d3.scaleLinear().range([plotDimensions.height, 0]), // value -> display
         yAxis = d3.axisLeft().scale(yScale);
@@ -405,7 +406,7 @@ function createPlot(communities) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Amount of people riding Bicycle to work");
+        .text("Amount of people that" + modeOfTravel + " to work");
 
     // draw bars
     graphPlot.selectAll(".bar")
@@ -417,7 +418,9 @@ function createPlot(communities) {
         .attr("x", (d) => { 
             return 50 + 2 + xScale(d.comm_code); 
         })
-        .attr("y", (d) => { return yScale(yValue(d)); })
+        .attr("y", (d) => { 
+            return yScale(yValue(d)); 
+        })
         .attr("width", 5)
         .attr("height", (d) => { 
             return (plotDimensions.height) - yScale(yValue(d)); 
@@ -567,7 +570,7 @@ function getAssignedColor(commCode, communities) {
     }
 
     let percentCycling =
-        communities[commCode].bicycle / bicyclistTotal * 100;
+        communities[commCode][modeOfTravel] / modeOfTravelTotal * 100;
 
     if (percentCycling < 0.5) {
         return '#c6dbef';
@@ -612,7 +615,7 @@ function processCsvRow(d, i, columns) {
             s += d[columns[i]];
         }
     };
-    bicyclistTotal += d.bicycle;
+    modeOfTravelTotal += d[modeOfTravel];
     d.sum = s;
     return d;
 }
