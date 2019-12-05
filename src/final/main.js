@@ -308,7 +308,7 @@ function createPlot() {
     graphPlot.append("text")
         .attr("class", "label")
         .attr("transform", "translate(0,100) rotate(-90)")
-        .attr("y", 6)
+        .attr("y", 0)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Amount of people that " + 
